@@ -40,15 +40,25 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
-            "Microsoft.EntityFrameworkCore.SqlServer": {
+            "Elsa": {
               "target": "Package",
-              "version": "[6.0.0, )"
+              "version": "[3.0.4, )"
             },
-            "Microsoft.EntityFrameworkCore.Tools": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
+            "Elsa.EntityFrameworkCore.Sqlite": {
               "target": "Package",
-              "version": "[6.0.0, )"
+              "version": "[3.0.4, )"
+            },
+            "Elsa.Identity": {
+              "target": "Package",
+              "version": "[3.0.4, )"
+            },
+            "Elsa.Liquid": {
+              "target": "Package",
+              "version": "[3.0.4, )"
+            },
+            "Elsa.Workflows.Api": {
+              "target": "Package",
+              "version": "[3.0.4, )"
             }
           },
           "imports": [

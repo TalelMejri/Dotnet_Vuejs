@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿//using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Models
 {
-    public class DbContextClasse : DbContext
+  /*  public class DbContextClasse : DbContext
     {
 
         public DbSet<Todo> Todos { get; set; }
@@ -10,5 +10,5 @@ namespace Backend.Models
         {
             optionsBuilder.UseSqlServer(@"data source=LAPTOP-JDBLJIM4\SQLEXPRESS; initial catalog=TodosDb; integrated security=SSPI;TrustServerCertificate=True");
         }
-    }
+    }*/
 }
