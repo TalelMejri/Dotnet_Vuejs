@@ -1,11 +1,12 @@
-﻿
-using Elsa.Http.Models;
+﻿using Elsa.Http.Models;
 using Elsa.Http;
-using Elsa.Workflows;
 using Elsa.Workflows.Activities;
-using Elsa.Workflows.Contracts;
 using System.Dynamic;
 using System.Net;
+using Elsa.Workflows;
+using Elsa.Workflows.Contracts;
+using Backend.Activities;
+using Elsa.Workflows.Memory;
 
 namespace Backend.Worflows
 {
@@ -17,33 +18,31 @@ namespace Backend.Worflows
             var userIdVariable = builder.WithVariable<string>();
             var userVariable = builder.WithVariable<ExpandoObject>();
 
+            var Name = new Variable<string>("C:\\Users\\talel\\Desktop\\Dotnet_Vuejs\\Backend\\Backend\\file\\diagram.bpmn");
+
+            var userId = new Variable<string>();
+
             builder.Root = new Sequence
             {
+                Variables = { Name,userId },
                 Activities =
             {
                 new HttpEndpoint
                 {
-                    Path = new("users/{userid}"),
-                    SupportedMethods = new(new[] { HttpMethods.Get }),
+                    Path = new ("/users"),
+                    SupportedMethods = new (new[] { HttpMethods.Get }),
                     CanStartWorkflow = true,
-                    RouteData = new(routeDataVariable)
                 },
-                new SetVariable
+                new readpbmn(Name)
                 {
-                    Variable = userIdVariable,
-                    Value = new(context =>
-                    {
-                        var routeData = routeDataVariable.Get(context)!;
-                        var userId = routeData["userid"].ToString();
-                        return userId;
-                    })
+                    Result = new(userId)
                 },
                 new SendHttpRequest
                 {
                     Url = new(context =>
                     {
-                        var userId = userIdVariable.Get(context);
-                        return new Uri($"https://reqres.in/api/users/{userId}");
+                        var id = userId.Get(context);
+                        return new Uri($"https://reqres.in/api/users/{id}");
                     }),
                     Method = new(HttpMethods.Get),
                     ParsedContent = new(userVariable),
@@ -57,7 +56,7 @@ namespace Backend.Worflows
                                 Content = new(context =>
                                 {
                                     var user = (dynamic)userVariable.Get(context)!;
-                                    return user.data;
+                                    return user.data.first_name + " "+user.data.last_name;
                                 }),
                                 StatusCode = new(HttpStatusCode.OK)
                             }
@@ -73,10 +72,10 @@ namespace Backend.Worflows
                         }
                     }
                 }
-              }
+          
+             }
             };
-
-
         }
     }
 }
+

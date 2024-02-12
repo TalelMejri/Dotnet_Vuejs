@@ -1,9 +1,6 @@
 ﻿using Elsa.Workflows;
 using Elsa.Workflows.Activities;
-using Elsa.Extensions;
 using Elsa.Workflows.Contracts;
-using Elsa.Workflows.Runtime.Activities;
-using Parallel = Elsa.Workflows.Activities.Parallel;
 using Elsa.Http;
 
 namespace Backend.Worflows

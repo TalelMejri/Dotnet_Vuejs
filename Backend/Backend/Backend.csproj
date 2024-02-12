@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,10 +14,6 @@
     <PackageReference Include="Elsa.Identity" Version="3.0.4" />
     <PackageReference Include="Elsa.Liquid" Version="3.0.4" />
     <PackageReference Include="Elsa.Workflows.Api" Version="3.0.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Activities\" />
   </ItemGroup>
 
 </Project>

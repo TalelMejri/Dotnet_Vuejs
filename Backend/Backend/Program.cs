@@ -1,9 +1,8 @@
 using Backend.Worflows;
 using Elsa.EntityFrameworkCore.Modules.Management;
 using Elsa.EntityFrameworkCore.Modules.Runtime;
+using Elsa.Expressions.Models;
 using Elsa.Extensions;
-
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +21,7 @@ builder.Services.AddElsa(elsa =>
     elsa.UseDefaultAuthentication();
     elsa.UseWorkflowManagement(management => management.UseEntityFrameworkCore());
     elsa.UseWorkflowRuntime(runtime => runtime.UseEntityFrameworkCore());
+
     elsa.UseJavaScript();
     elsa.UseLiquid();
     elsa.UseWorkflowsApi();
@@ -32,6 +32,7 @@ builder.Services.AddElsa(elsa =>
     });
     elsa.AddWorkflowsFrom<Program>();
     elsa.AddActivitiesFrom<Program>();
+    elsa.UseHttp();
 });
 
 var app = builder.Build();
