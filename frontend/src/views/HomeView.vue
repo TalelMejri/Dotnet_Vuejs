@@ -164,14 +164,17 @@ a {
 
 
  <template>
+  <div>
   <div class="diagram-container">
     <div ref="canvas" id="canvas" class="canvas"></div>
     <div id="properties" class="properties"></div>
   </div>
+  <button type="button" @click="DownloadDiagramXml()">Download</button>
+</div>
 </template>
 
 <script>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref ,toRaw} from 'vue';
 import Modeler from 'bpmn-js/lib/Modeler';
 import propertiesPanelModule from 'bpmn-js-properties-panel';
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
@@ -180,9 +183,9 @@ import camundaModdleDescriptor from '../descriptor/camundaDescriptor.json';
 export default {
   setup() {
     const canvas = ref(null);
-    
+    const test = ref(null);
     onMounted(() => {
-      const modeler = new Modeler({
+       const modeler = new Modeler({
         container: canvas.value,
         propertiesPanel: {
           parent: '#properties',
@@ -192,6 +195,7 @@ export default {
           camunda: camundaModdleDescriptor,
         },
       });
+      test.value=modeler;
 
       fetch('./diagram.bpmn')
         .then(response => response.text())
@@ -206,9 +210,27 @@ export default {
         })
         .catch(err => console.error('Error loading BPMN diagram', err));
     });
-
+      
+    const DownloadDiagramXml = () => {
+      const modeler = toRaw(test.value);
+      modeler.saveXML({ format: true }, function(err, xml) {
+        if (err) {
+            console.log('Error saving XML', err);
+          } else {
+            const blob = new Blob([xml], { type: 'application/bpmn20-xml;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'diagram.bpmn';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+          }
+        })
+    };
     return {
-      canvas,
+      canvas,DownloadDiagramXml
     };
   },
 };
