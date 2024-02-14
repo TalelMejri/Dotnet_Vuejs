@@ -163,9 +163,9 @@ a {
 </style> -->
 
 
-<!-- <template>
+ <template>
   <div class="diagram-container">
-    <div ref="canvas" class="canvas"></div>
+    <div ref="canvas" id="canvas" class="canvas"></div>
     <div id="properties" class="properties"></div>
   </div>
 </template>
@@ -179,11 +179,11 @@ import camundaModdleDescriptor from '../descriptor/camundaDescriptor.json';
 
 export default {
   setup() {
-    const canvasRef = ref(null);
+    const canvas = ref(null);
     
     onMounted(() => {
       const modeler = new Modeler({
-        container: canvasRef.value,
+        container: canvas.value,
         propertiesPanel: {
           parent: '#properties',
         },
@@ -208,7 +208,7 @@ export default {
     });
 
     return {
-      canvasRef,
+      canvas,
     };
   },
 };
@@ -232,7 +232,7 @@ export default {
   height: 100%;
   overflow: auto;
 }
-</style> -->
+</style> 
 
 
 <!-- 
