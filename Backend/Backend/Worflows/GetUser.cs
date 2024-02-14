@@ -26,7 +26,7 @@ namespace Backend.Worflows
             {
                 Variables = { Name,userId },
                 Activities =
-            {
+              {
                 new HttpEndpoint
                 {
                     Path = new ("/users"),
@@ -73,7 +73,7 @@ namespace Backend.Worflows
                     }
                 }
           
-             }
+              }
             };
         }
     }
