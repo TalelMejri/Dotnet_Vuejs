@@ -5,9 +5,6 @@ import { isAny } from "bpmn-js/lib/features/modeling/util/ModelingUtil";
 import { getChildLanes } from "bpmn-js/lib/features/modeling/util/LaneUtil";
 import { hasPrimaryModifier } from "diagram-js/lib/util/Mouse";
 
-/**
- * A provider for BPMN 2.0 elements context pad
- */
 export default function ContextPadProvider(
   config,
   injector,
@@ -164,11 +161,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
 
   function splitLaneHandler(count) {
     return function(event, element) {
-      // actual split
       modeling.splitLane(element, count);
-
-      // refresh context pad after split to
-      // get rid of split icons
       contextPad.open(element, true);
     };
   }
@@ -240,31 +233,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
         "append.receive-task": appendAction(
           "bpmn:ReceiveTask",
           "bpmn-icon-receive-task"
-        ) /*
-        "append.message-intermediate-event": appendAction(
-          "bpmn:IntermediateCatchEvent",
-          "bpmn-icon-intermediate-event-catch-message",
-          translate("Append MessageIntermediateCatchEvent"),
-          { eventDefinitionType: "bpmn:MessageEventDefinition" }
-        ),
-        "append.timer-intermediate-event": appendAction(
-          "bpmn:IntermediateCatchEvent",
-          "bpmn-icon-intermediate-event-catch-timer",
-          translate("Append TimerIntermediateCatchEvent"),
-          { eventDefinitionType: "bpmn:TimerEventDefinition" }
-        ),,
-        "append.condtion-intermediate-event": appendAction(
-          "bpmn:IntermediateCatchEvent",
-          "bpmn-icon-intermediate-event-catch-condition",
-          translate("Append ConditionIntermediateCatchEvent"),
-          { eventDefinitionType: "bpmn:ConditionalEventDefinition" }
-        ),
-        "append.signal-intermediate-event": appendAction(
-          "bpmn:IntermediateCatchEvent",
-          "bpmn-icon-intermediate-event-catch-signal",
-          translate("Append SignalIntermediateCatchEvent"),
-          { eventDefinitionType: "bpmn:SignalEventDefinition" }
-        )*/
+        ) 
       });
     } else if (
       isEventType(
@@ -304,34 +273,11 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
           translate("Append Gateway")
         ),
         "append.append-task": appendAction("bpmn:Task", "bpmn-icon-task")
-        /*"append.intermediate-event": appendAction(
-          "bpmn:IntermediateThrowEvent",
-          "bpmn-icon-intermediate-event-none",
-          translate("Append Intermediate/Boundary Event")
-        )*/
+       
       });
     }
   }
-  /*
-  if (!popupMenu.isEmpty(element, "bpmn-replace")) {
-    // Replace menu entry
-    assign(actions, {
-      replace: {
-        group: "edit",
-        className: "bpmn-icon-screw-wrench",
-        title: translate("Change type"),
-        action: {
-          click: function(event, element) {
-            var position = assign(getReplaceMenuPosition(element), {
-              cursor: { x: event.x, y: event.y }
-            });
-
-            popupMenu.open(element, "bpmn-replace", position);
-          }
-        }
-      }
-    });
-  }*/
+ 
 
   if (
     isAny(businessObject, [
@@ -342,11 +288,7 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
     ])
   ) {
     assign(actions, {
-      /*
-      "append.text-annotation": appendAction(
-        "bpmn:TextAnnotation",
-        "bpmn-icon-text-annotation"
-      )*/
+    
       connect: {
         group: "connect",
         className: "bpmn-icon-connection-multi",
@@ -383,14 +325,11 @@ ContextPadProvider.prototype.getContextPadEntries = function(element) {
       }
     });
   }
-
-  // delete element entry, only show if allowed by rules
   var deleteAllowed = rules.allowed("elements.delete", {
     elements: [element]
   });
 
   if (isArray(deleteAllowed)) {
-    // was the element returned as a deletion candidate?
     deleteAllowed = deleteAllowed[0] === element;
   }
 

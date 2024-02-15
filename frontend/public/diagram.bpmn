@@ -1,18 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="sid-38422fae-e03e-43a3-bef4-bd33b32041b2" targetNamespace="http://bpmn.io/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="16.4.0">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="sid-38422fae-e03e-43a3-bef4-bd33b32041b2" targetNamespace="http://bpmn.io/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="16.4.0">
   <process id="Process_1" isExecutable="false">
     <startEvent id="StartEvent_1y45yut" name="Start">
-      <outgoing>SequenceFlow_0h21x7r</outgoing>
+      <outgoing>SequenceFlow_0vxowrn</outgoing>
     </startEvent>
-    <sequenceFlow id="SequenceFlow_0h21x7r" sourceRef="StartEvent_1y45yut" targetRef="Task_1hcentk" />
-    <serviceTask id="Task_1hcentk" name="4">
-      <incoming>SequenceFlow_0h21x7r</incoming>
-      <outgoing>Flow_0nz5t1y</outgoing>
-    </serviceTask>
-    <endEvent id="Event_12o1npa">
-      <incoming>Flow_0nz5t1y</incoming>
+    <task id="Task_045mtki" name="File Input">
+      <extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="Input_2snsp8e">c:/xampp</camunda:inputParameter>
+          <camunda:outputParameter name="Output_2lb4dje">
+            <camunda:list>
+              <camunda:value>c.pdf</camunda:value>
+              <camunda:value>w.xord</camunda:value>
+            </camunda:list>
+          </camunda:outputParameter>
+        </camunda:inputOutput>
+      </extensionElements>
+      <incoming>SequenceFlow_0vxowrn</incoming>
+      <outgoing>SequenceFlow_1aikexp</outgoing>
+    </task>
+    <task id="Task_1h0ftsl" name="Transfert File">
+      <extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="Input_32s3fga">c:/xampp/htdocs</camunda:inputParameter>
+          <camunda:outputParameter name="Output_2h8tgmt">succés</camunda:outputParameter>
+        </camunda:inputOutput>
+      </extensionElements>
+      <incoming>SequenceFlow_1aikexp</incoming>
+      <outgoing>SequenceFlow_0hplc2e</outgoing>
+    </task>
+    <endEvent id="EndEvent_1gqpv03">
+      <incoming>SequenceFlow_0hplc2e</incoming>
     </endEvent>
-    <sequenceFlow id="Flow_0nz5t1y" sourceRef="Task_1hcentk" targetRef="Event_12o1npa" />
+    <sequenceFlow id="SequenceFlow_0vxowrn" sourceRef="StartEvent_1y45yut" targetRef="Task_045mtki" />
+    <sequenceFlow id="SequenceFlow_1aikexp" sourceRef="Task_045mtki" targetRef="Task_1h0ftsl" />
+    <sequenceFlow id="SequenceFlow_0hplc2e" sourceRef="Task_1h0ftsl" targetRef="EndEvent_1gqpv03" />
   </process>
   <bpmndi:BPMNDiagram id="BpmnDiagram_1">
     <bpmndi:BPMNPlane id="BpmnPlane_1" bpmnElement="Process_1">
@@ -22,20 +44,26 @@
           <omgdc:Bounds x="159" y="145" width="25" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_19my0z6_di" bpmnElement="Task_1hcentk">
-        <omgdc:Bounds x="300" y="80" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+      <bpmndi:BPMNShape id="Task_045mtki_di" bpmnElement="Task_045mtki">
+        <omgdc:Bounds x="281" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_12o1npa_di" bpmnElement="Event_12o1npa">
-        <omgdc:Bounds x="522" y="102" width="36" height="36" />
+      <bpmndi:BPMNShape id="Task_1h0ftsl_di" bpmnElement="Task_1h0ftsl">
+        <omgdc:Bounds x="505" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_0h21x7r_di" bpmnElement="SequenceFlow_0h21x7r">
+      <bpmndi:BPMNShape id="EndEvent_1gqpv03_di" bpmnElement="EndEvent_1gqpv03">
+        <omgdc:Bounds x="740" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0vxowrn_di" bpmnElement="SequenceFlow_0vxowrn">
         <omgdi:waypoint x="188" y="120" />
-        <omgdi:waypoint x="300" y="120" />
+        <omgdi:waypoint x="281" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0nz5t1y_di" bpmnElement="Flow_0nz5t1y">
-        <omgdi:waypoint x="400" y="120" />
-        <omgdi:waypoint x="522" y="120" />
+      <bpmndi:BPMNEdge id="SequenceFlow_1aikexp_di" bpmnElement="SequenceFlow_1aikexp">
+        <omgdi:waypoint x="381" y="120" />
+        <omgdi:waypoint x="505" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0hplc2e_di" bpmnElement="SequenceFlow_0hplc2e">
+        <omgdi:waypoint x="605" y="120" />
+        <omgdi:waypoint x="740" y="120" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -1,7 +1,5 @@
 const assign = Object.assign;
-/**
- * A palette that allows you to create BPMN _and_ custom elements.
- */
+
 export default function PaletteProvider(
   palette,
   create,
