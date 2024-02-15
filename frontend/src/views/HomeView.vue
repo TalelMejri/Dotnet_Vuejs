@@ -1,11 +1,14 @@
  <template>
   <div>
-  <div class="diagram-container">
+    <div class="d-flex justify-content-center gap-4 mt-2">
+    <button type="button" class="btn btn-success" @click="DownloadDiagramXml()">Download</button>
+    <button type="button" class="btn btn-info" @click="ResetDiagram()">Reset</button>
+     <button type="button" class="btn btn-danger" @click="DownloadDiagramSvg()">Download SVG</button>
+  </div>
+  <div class="diagram-container ">
     <div ref="canvas" id="canvas" class="canvas"></div>
     <div id="properties" class="properties"></div>
   </div>
-  <button type="button" @click="DownloadDiagramXml()">Download</button>
-  <button type="button" @click="ResetDiagram()">Reset</button>
 </div>
 </template>
 
@@ -15,7 +18,7 @@ import propertiesPanelModule from 'bpmn-js-properties-panel';
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
 import camundaModdleDescriptor from '../descriptor/camundaDescriptor.json';
 import Modeler from "../assets/CustomBpmnModeler.js"
-import { openDiagram,saveDiagram,resetDiagramToBlank } from "../descriptor/diagram_util.js";
+import { openDiagram,saveDiagram,resetDiagramToBlank,SaveSvg } from "../descriptor/diagram_util.js";
 export default {
   setup() {
     const canvas = ref(null);
@@ -46,8 +49,12 @@ export default {
       resetDiagramToBlank(test.value)
     }
 
+    const DownloadDiagramSvg = async () => {
+      SaveSvg(test.value);
+    };
+
     return {
-      canvas,DownloadDiagramXml,ResetDiagram
+      canvas,DownloadDiagramXml,ResetDiagram,DownloadDiagramSvg
     };
   },
 };

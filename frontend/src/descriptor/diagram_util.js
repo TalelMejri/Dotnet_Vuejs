@@ -36,4 +36,20 @@ export function saveDiagram(modeler) {
         })
 }
 
+export  function  SaveSvg(modeler) {
+  modeler.saveSVG({ format: true }, function(err, svg) {
+    if (err) {
+      console.error('Error saving SVG: ', err);
+    } else {
+      const svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+      const svgUrl = URL.createObjectURL(svgBlob);
+      const downloadLink = document.createElement('a');
+      downloadLink.href = svgUrl;
+      downloadLink.download = 'diagram.svg';
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+  });
+}
 
