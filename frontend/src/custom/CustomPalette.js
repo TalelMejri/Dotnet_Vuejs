@@ -10,8 +10,6 @@ export default function PaletteProvider(
   this._elementFactory = elementFactory;
   this._spaceTool = spaceTool;
 
-  console.log("palette", palette);
-
   palette.registerProvider(this);
 }
 

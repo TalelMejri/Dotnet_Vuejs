@@ -13,6 +13,7 @@
     "camunda-bpmn-moddle": "^4.5.0",
     "core-js": "^3.8.3",
     "lz-string": "1.4.4",
+    "min-dash": "^4.2.1",
     "vue": "^3.2.13",
     "vue-bpmn": "^0.3.0",
     "vue-router": "^4.0.3",
