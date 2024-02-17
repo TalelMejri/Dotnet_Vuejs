@@ -23,6 +23,11 @@ const COLORS = [
     label: 'Purple',
     fill: '#E1BEE7',
     stroke: '#5B176D'
+  } ,
+  {
+    label: 'Yellow',
+    fill: '#bfff00',
+    stroke: '#5B176D'
   } 
 ];
   
