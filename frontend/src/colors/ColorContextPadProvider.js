@@ -64,7 +64,8 @@ ColorContextPadProvider.prototype._createPopupAction = function(elements) {
             const titledDivs = container.querySelectorAll('div[title]');
               titledDivs.forEach(div => {
                    let color = div.getAttribute('title').toLowerCase(); 
-                   div.style.backgroundColor = color=='default' ? 'white' : color; 
+                   div.style.backgroundColor = color=='default' ? 'white' : color;
+                   div.style.color = color=='default' ? 'white' : color; 
                    div.style.cursor="pointer"
               });
           }catch(e){

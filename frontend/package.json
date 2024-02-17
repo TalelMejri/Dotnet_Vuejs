@@ -9,8 +9,11 @@
   "dependencies": {
     "bootstrap": "^5.3.2",
     "bpmn-js": "^3.5.0",
+    "bpmn-js-embedded-comments": "^0.7.0",
     "bpmn-js-properties-panel": "^0.39.0",
+    "bpmn-js-token-simulation": "^0.33.0",
     "camunda-bpmn-moddle": "^4.5.0",
+    "camunda-transaction-boundaries": "^1.1.2",
     "core-js": "^3.8.3",
     "diagram-js": "^14.0.0",
     "diagram-js-grid": "^1.0.0",

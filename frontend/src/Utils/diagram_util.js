@@ -8,6 +8,8 @@ export function openDiagram(modeler, diagramXml) {
           console.error('Could not import BPMN diagram', error);
         } else {
           modeler.get('canvas').zoom('fit-viewport');
+          var transactionBoundaries = modeler.get('transactionBoundaries');
+          transactionBoundaries.show();
         }
       });
     })
