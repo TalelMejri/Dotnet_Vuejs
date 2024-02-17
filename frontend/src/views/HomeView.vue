@@ -27,6 +27,7 @@ import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camu
 // import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
 import camundaModdleDescriptor from "../descriptor/camundaDescriptor.json"
 import Modeler from "../Modeler/CustomBpmnModeler.js";
+import gridModule from 'diagram-js-grid';
 import ColorsBpm from "../colors/index";
 import { openDiagram, saveDiagram, resetDiagramToBlank, SaveSvg } from "../Utils/diagram_util.js";
 export default {
@@ -47,7 +48,8 @@ export default {
         additionalModules: [
           propertiesPanelModule,
           propertiesProviderModule,
-          ColorsBpm
+          ColorsBpm,
+          gridModule
         ],
         moddleExtensions: {
           camunda: camundaModdleDescriptor,
@@ -109,9 +111,6 @@ export default {
   .canvas{
     width: 100%;
     height: 100%;
-    background-image: url("../assets/images/back.png");
-    background-repeat: no-repeat;
-    background-size: cover;
   }
 
 

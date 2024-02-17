@@ -1,15 +1,13 @@
-const { defineConfig } = require('@vue/cli-service');
-
-module.exports = defineConfig({
+module.exports = {
   transpileDependencies: true,
   configureWebpack: {
     module: {
       rules: [
         {
           test: /\.bpmn$/,
-          use: 'xml-loader'
+          use: 'xml-loader',
         },
       ],
     },
   },
-});
+};
