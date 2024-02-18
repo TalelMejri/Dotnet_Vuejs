@@ -17,8 +17,12 @@
         <i class="fa fa-file-image-o"></i>
       </button>
       <button type="button" @click="ShowComments()">
-        <i :class="!showComments ? 'fa fa-comments': 'fa fa-times-circle'"></i>
-    </button>
+        <i :class="!showComments ? 'fa fa-comments' : 'fa fa-times-circle'"></i>
+      </button>
+      <button type="button" @click="ImportDiagram">
+        <i class="fa fa-upload"></i>
+      </button>
+      <input type="file" accept=".bpmn" @change="HandleFileImport" ref="fileInput" style="display: none" />
     </div>
   </div>
 </template>
@@ -35,13 +39,14 @@ import CommentModule from "../comment_custom/index"
 import TokenSimulationModule from 'bpmn-js-token-simulation';
 import ColorsBpm from "../colors/index";
 import transactionBoundariesModule from 'camunda-transaction-boundaries';
-import { openDiagram, saveDiagram, resetDiagramToBlank, SaveSvg } from "../Utils/diagram_util.js";
+import { openDiagram, saveDiagram, resetDiagramToBlank, SaveSvg,saveDiagramToLocal } from "../Utils/diagram_util.js";
 export default {
   setup() {
 
     const canvas = ref(null);
     const test = ref(null);
     const showComments = ref(false)
+    const fileInput = ref(null);
 
     onMounted(() => {
       const modeler = new Modeler({
@@ -67,9 +72,23 @@ export default {
       });
 
       test.value = modeler;
-      openDiagram(modeler, './diagram.bpmn');
+      openDiagram(modeler, './diagram.bpmn'); 
 
     });
+
+    const ImportDiagram = () => {
+      fileInput.value.click();
+    };
+
+    const HandleFileImport = (event) => {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        saveDiagramToLocal(e.target.result)
+        openDiagram(test.value, window.localStorage.getItem('savedDiagram'));
+      };
+      reader.readAsText(file);
+    };
 
     const DownloadDiagramXml = () => {
       saveDiagram(toRaw(test.value))
@@ -97,7 +116,7 @@ export default {
 
 
     return {
-      canvas, DownloadDiagramXml, ResetDiagram, DownloadDiagramSvg, ShowComments,showComments
+      canvas, DownloadDiagramXml, ResetDiagram, DownloadDiagramSvg, ShowComments, showComments, ImportDiagram, HandleFileImport, fileInput
     };
   },
 };

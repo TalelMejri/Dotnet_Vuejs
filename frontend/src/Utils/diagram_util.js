@@ -1,9 +1,34 @@
+// function convertToXml(modelData) {
+//   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+//   xml += `<definitions id="${modelData.$.id}" xmlns="${modelData.$['xmlns']}" xmlns:xsi="${modelData.$['xmlns:xsi']}" xmlns:bpmn="${modelData.$['xmlns:bpmn']}" xmlns:bpmndi="${modelData.$['xmlns:bpmndi']}" xmlns:omgdc="${modelData.$['xmlns:omgdc']}" xmlns:omgdi="${modelData.$['xmlns:omgdi']}" xmlns:camunda="${modelData.$['xmlns:camunda']}" targetNamespace="${modelData.$.targetNamespace}">\n`;
+  
+//   // Exporter information
+//   xml += `<exporter>${modelData.$.exporter}</exporter>\n`;
+//   xml += `<exporterVersion>${modelData.$.exporterVersion}</exporterVersion>\n`;
+
+//   // BPMNDiagram
+//   xml += `<bpmndi:BPMNDiagram id="${modelData.bpmndi.BPMNDiagram[0].$.id}">\n`;
+//   // You would need to iterate through BPMNPlane and BPMNShape here
+//   xml += `</bpmndi:BPMNDiagram>\n`;
+
+//   // Process
+//   modelData.process.forEach(process => {
+//     xml += `<bpmn:process id="${process.$.id}" isExecutable="${process.$.isExecutable}">\n`;
+//     // You would need to iterate through each element inside the process here
+//     xml += `</bpmn:process>\n`;
+//   });
+
+//   xml += `</definitions>`;
+  
+//   return xml;
+// }
+
 
 export function openDiagram(modeler, diagramXml) {
   fetch(diagramXml)
     .then(response => response.text())
     .then(diagram => {
-      modeler.importXML(diagram.toString(), error => {
+      modeler.importXML(diagram, error => {
         if (error) {
           console.error('Could not import BPMN diagram', error);
         } else {
@@ -55,3 +80,6 @@ export function SaveSvg(modeler) {
   });
 }
 
+export function saveDiagramToLocal(DiagXml) {
+      window.localStorage.setItem('savedDiagram', DiagXml);
+ }
