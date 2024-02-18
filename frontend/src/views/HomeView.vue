@@ -1,5 +1,12 @@
 <template>
+  <div>
+    <!-- <div class="titre"  data-aos="zoom-out" >
+       <h2>Neoledge Bpmn</h2>
+    </div> -->
   <div class="bpmn_content">
+    <div class="img">
+      <img src="../assets/images/neoledge.png" >
+    </div>
     <div class="flow-container">
       <div ref="content" class="containers">
         <div id="canvas" ref="canvas" class="canvas"></div>
@@ -7,7 +14,6 @@
       </div>
     </div>
     <div class="button-container">
-      
       <button type="button" @click="DownloadDiagramXml()">
         <i class="fa fa-download"></i>
       </button>
@@ -28,8 +34,8 @@
       </button>
       <input type="file" accept=".bpmn" @change="HandleFileImport" ref="fileInput" style="display: none" />
     </div>
-   
   </div>
+</div>
 </template>
 
 <script>
@@ -210,5 +216,41 @@ export default {
    display: none;
    transition: all 0.5 ease-in-out;
 }
+
+.img{
+  position: absolute;
+  z-index:98999999;
+  bottom: 0;
+  img{
+    width: 50px;
+    height: 50px;
+    border-radius: 30px;
+  }
+  right: 25px;
+  bottom : 20px;
+  animation:  ColorLogo 4s infinite;
+}
+
+
+@keyframes ColorLogo {
+  0%{
+    filter: grayscale(0);
+  }
+  100%{
+    filter: grayscale(15000);
+  }
+}
+// .titre{
+//   z-index: 9;
+//   position: absolute;
+//   padding-top: 10px;
+//   color: black;
+//   left: 40%;
+//   transform: translateX(-100%);
+//   display: flex;
+//   justify-content: center;
+// }
+
+
 </style> 
 
