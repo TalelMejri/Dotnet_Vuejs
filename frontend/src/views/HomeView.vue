@@ -3,10 +3,11 @@
     <div class="flow-container">
       <div ref="content" class="containers">
         <div id="canvas" ref="canvas" class="canvas"></div>
-        <div id="properties" class="properties"></div>
+        <div id="properties" :class="propertiesVisible ? 'properties-visible' : 'properties'"></div>
       </div>
     </div>
     <div class="button-container">
+      
       <button type="button" @click="DownloadDiagramXml()">
         <i class="fa fa-download"></i>
       </button>
@@ -19,11 +20,15 @@
       <button type="button" @click="ShowComments()">
         <i :class="!showComments ? 'fa fa-comments' : 'fa fa-times-circle'"></i>
       </button>
+      <button type="button" @click="ToggleProperties">
+        Affiche Prop
+      </button>
       <button type="button" @click="ImportDiagram">
         <i class="fa fa-upload"></i>
       </button>
       <input type="file" accept=".bpmn" @change="HandleFileImport" ref="fileInput" style="display: none" />
     </div>
+   
   </div>
 </template>
 
@@ -39,7 +44,7 @@ import CommentModule from "../comment_custom/index"
 import TokenSimulationModule from 'bpmn-js-token-simulation';
 import ColorsBpm from "../colors/index";
 import transactionBoundariesModule from 'camunda-transaction-boundaries';
-import { openDiagram, saveDiagram, resetDiagramToBlank, SaveSvg,saveDiagramToLocal } from "../Utils/diagram_util.js";
+import { openDiagram, saveDiagram, SaveSvg, saveDiagramToLocal } from "../Utils/diagram_util.js";
 export default {
   setup() {
 
@@ -47,6 +52,7 @@ export default {
     const test = ref(null);
     const showComments = ref(false)
     const fileInput = ref(null);
+    const propertiesVisible = ref(false);
 
     onMounted(() => {
       const modeler = new Modeler({
@@ -72,7 +78,7 @@ export default {
       });
 
       test.value = modeler;
-      openDiagram(modeler, './diagram.bpmn'); 
+      openDiagram(modeler, './diagram.bpmn');
 
     });
 
@@ -95,7 +101,7 @@ export default {
     };
 
     const ResetDiagram = () => {
-      resetDiagramToBlank(test.value)
+      location.reload();
     }
 
     const DownloadDiagramSvg = async () => {
@@ -114,9 +120,15 @@ export default {
       });
     }
 
+    const ToggleProperties = () => {
+      propertiesVisible.value = !propertiesVisible.value;
+    };
+
 
     return {
-      canvas, DownloadDiagramXml, ResetDiagram, DownloadDiagramSvg, ShowComments, showComments, ImportDiagram, HandleFileImport, fileInput
+      canvas, DownloadDiagramXml, ResetDiagram,
+      DownloadDiagramSvg, ShowComments, showComments,
+      ImportDiagram, HandleFileImport, fileInput, ToggleProperties,propertiesVisible
     };
   },
 };
@@ -156,6 +168,9 @@ export default {
   height: 100%;
 }
 
+.bjs-powered-by {
+  display: none;
+}
 
 .properties {
   position: absolute;
@@ -163,19 +178,19 @@ export default {
   top: 0;
   width: 300px;
   height: 100%;
-  z-index: 999999999;
   overflow-y: scroll;
 }
 
 .button-container {
   position: absolute;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  // left: 50%;
+  // transform: translateX(-50%);
   display: flex;
-  justify-content: center;
+  
+  // justify-content: center;
   gap: 20px;
-  padding-bottom: 10px;
+  padding: 0 0 5px 10px;
 
   button {
     color: #000;
@@ -189,6 +204,11 @@ export default {
     transform: scale(1.1);
     transition: all 0.5 ease-in-out;
   }
+}
+
+.properties-visible {
+   display: none;
+   transition: all 0.5 ease-in-out;
 }
 </style> 
 

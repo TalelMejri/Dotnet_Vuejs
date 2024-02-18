@@ -23,7 +23,6 @@
 //   return xml;
 // }
 
-
 export function openDiagram(modeler, diagramXml) {
   fetch(diagramXml)
     .then(response => response.text())
@@ -41,9 +40,9 @@ export function openDiagram(modeler, diagramXml) {
     .catch(err => console.error('Error loading BPMN diagram', err));
 }
 
-export function resetDiagramToBlank(modeler) {
-  openDiagram(modeler, './InitDiagram.bpmn');
-}
+// export function resetDiagramToBlank(modeler) {
+//   openDiagram(modeler, './InitDiagram.bpmn');
+// }
 
 export function saveDiagram(modeler) {
   modeler.saveXML({ format: true }, function (err, xml) {

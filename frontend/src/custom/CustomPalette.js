@@ -79,7 +79,7 @@ PaletteProvider.prototype.getPaletteEntries = function(element) {
         dragstart: createParticipant,
         click: createParticipant
       }
-    }
+    },
   });
 
   return actions;
