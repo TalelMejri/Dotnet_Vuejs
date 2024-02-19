@@ -4,6 +4,10 @@ module.exports = {
     module: {
       rules: [
         {
+          test: /\.bpmnlintrc$/,
+          use: 'json-loader',
+        },
+        {
           test: /\.bpmn$/,
           use: 'xml-loader',
         },

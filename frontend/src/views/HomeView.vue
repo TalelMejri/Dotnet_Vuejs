@@ -3,39 +3,39 @@
     <!-- <div class="titre"  data-aos="zoom-out" >
        <h2>Neoledge Bpmn</h2>
     </div> -->
-  <div class="bpmn_content">
-    <div class="img">
-      <img src="../assets/images/neoledge.png" >
-    </div>
-    <div class="flow-container">
-      <div ref="content" class="containers">
-        <div id="canvas" ref="canvas" class="canvas"></div>
-        <div id="properties" :class="propertiesVisible ? 'properties-visible' : 'properties'"></div>
+    <div class="bpmn_content">
+      <div class="img">
+        <img src="../assets/images/neoledge.png">
+      </div>
+      <div class="flow-container">
+        <div ref="content" class="containers">
+          <div id="canvas" ref="canvas" class="canvas"></div>
+          <div id="properties" :class="propertiesVisible ? 'properties-visible' : 'properties'"></div>
+        </div>
+      </div>
+      <div class="button-container">
+        <button type="button" @click="DownloadDiagramXml()">
+          <i class="fa fa-download"></i>
+        </button>
+        <button type="button" @click="ResetDiagram()">
+          <i class="fa fa-refresh"></i>
+        </button>
+        <button type="button" @click="DownloadDiagramSvg()">
+          <i class="fa fa-file-image-o"></i>
+        </button>
+        <button type="button" @click="ShowComments()">
+          <i :class="!showComments ? 'fa fa-comments' : 'fa fa-times-circle'"></i>
+        </button>
+        <button type="button" @click="ToggleProperties">
+          Affiche Prop
+        </button>
+        <button type="button" @click="ImportDiagram">
+          <i class="fa fa-upload"></i>
+        </button>
+        <input type="file" accept=".bpmn" @change="HandleFileImport" ref="fileInput" style="display: none" />
       </div>
     </div>
-    <div class="button-container">
-      <button type="button" @click="DownloadDiagramXml()">
-        <i class="fa fa-download"></i>
-      </button>
-      <button type="button" @click="ResetDiagram()">
-        <i class="fa fa-refresh"></i>
-      </button>
-      <button type="button" @click="DownloadDiagramSvg()">
-        <i class="fa fa-file-image-o"></i>
-      </button>
-      <button type="button" @click="ShowComments()">
-        <i :class="!showComments ? 'fa fa-comments' : 'fa fa-times-circle'"></i>
-      </button>
-      <button type="button" @click="ToggleProperties">
-        Affiche Prop
-      </button>
-      <button type="button" @click="ImportDiagram">
-        <i class="fa fa-upload"></i>
-      </button>
-      <input type="file" accept=".bpmn" @change="HandleFileImport" ref="fileInput" style="display: none" />
-    </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -51,6 +51,9 @@ import TokenSimulationModule from 'bpmn-js-token-simulation';
 import ColorsBpm from "../colors/index";
 import transactionBoundariesModule from 'camunda-transaction-boundaries';
 import { openDiagram, saveDiagram, SaveSvg, saveDiagramToLocal } from "../Utils/diagram_util.js";
+import bpmnlintrc from '../../.bpmnlintrc';
+import lintModule from 'bpmn-js-bpmnlint';
+import 'bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css';
 export default {
   setup() {
 
@@ -60,14 +63,18 @@ export default {
     const fileInput = ref(null);
     const propertiesVisible = ref(false);
 
+
     onMounted(() => {
       const modeler = new Modeler({
         container: canvas.value,
         propertiesPanel: {
           parent: '#properties',
         },
+        linting: {
+          bpmnlint: bpmnlintrc
+        },
         keyboard: {
-          bindTo: document
+          bindTo: window
         },
         additionalModules: [
           propertiesPanelModule,
@@ -76,17 +83,48 @@ export default {
           gridModule,
           TokenSimulationModule,
           CommentModule,
-          transactionBoundariesModule
+          transactionBoundariesModule,
+          lintModule
         ],
         moddleExtensions: {
           camunda: camundaModdleDescriptor,
         }
       });
-
       test.value = modeler;
-      openDiagram(modeler, './diagram.bpmn');
-
+      openDiagram(modeler);
     });
+
+
+    const ResetDiagram = () => {
+      test.value.destroy();
+      const modeler = new Modeler({
+        container: canvas.value,
+        propertiesPanel: {
+          parent: '#properties',
+        },
+        linting: {
+          bpmnlint: bpmnlintrc
+        },
+        keyboard: {
+          bindTo: window
+        },
+        additionalModules: [
+          propertiesPanelModule,
+          propertiesProviderModule,
+          ColorsBpm,
+          gridModule,
+          TokenSimulationModule,
+          CommentModule,
+          transactionBoundariesModule,
+          lintModule
+        ],
+        moddleExtensions: {
+          camunda: camundaModdleDescriptor,
+        }
+      });
+      test.value = modeler;
+      openDiagram(modeler);
+    };
 
     const ImportDiagram = () => {
       fileInput.value.click();
@@ -96,19 +134,41 @@ export default {
       const file = event.target.files[0];
       const reader = new FileReader();
       reader.onload = (e) => {
-        saveDiagramToLocal(e.target.result)
-        openDiagram(test.value, window.localStorage.getItem('savedDiagram'));
+        test.value.destroy();
+        const modeler = new Modeler({
+          container: canvas.value,
+          propertiesPanel: {
+            parent: '#properties',
+          },
+          linting: {
+            bpmnlint: bpmnlintrc
+          },
+          keyboard: {
+            bindTo: window
+          },
+          additionalModules: [
+            propertiesPanelModule,
+            propertiesProviderModule,
+            ColorsBpm,
+            gridModule,
+            TokenSimulationModule,
+            CommentModule,
+            transactionBoundariesModule,
+            lintModule
+          ],
+          moddleExtensions: {
+            camunda: camundaModdleDescriptor,
+          }
+        });
+        test.value = modeler;
+        openDiagram(modeler, e.target.result);
       };
-      reader.readAsText(file);
+      reader.readAsBinaryString(file);
     };
 
     const DownloadDiagramXml = () => {
       saveDiagram(toRaw(test.value))
     };
-
-    const ResetDiagram = () => {
-      location.reload();
-    }
 
     const DownloadDiagramSvg = async () => {
       SaveSvg(test.value);
@@ -134,7 +194,7 @@ export default {
     return {
       canvas, DownloadDiagramXml, ResetDiagram,
       DownloadDiagramSvg, ShowComments, showComments,
-      ImportDiagram, HandleFileImport, fileInput, ToggleProperties,propertiesVisible
+      ImportDiagram, HandleFileImport, fileInput, ToggleProperties, propertiesVisible, test
     };
   },
 };
@@ -193,7 +253,7 @@ export default {
   // left: 50%;
   // transform: translateX(-50%);
   display: flex;
-  
+
   // justify-content: center;
   gap: 20px;
   padding: 0 0 5px 10px;
@@ -213,33 +273,37 @@ export default {
 }
 
 .properties-visible {
-   display: none;
-   transition: all 0.5 ease-in-out;
+  display: none;
+  transition: all 0.5 ease-in-out;
 }
 
-.img{
+.img {
   position: absolute;
-  z-index:98999999;
+  z-index: 98999999;
   bottom: 0;
-  img{
+
+  img {
     width: 50px;
     height: 50px;
     border-radius: 30px;
   }
+
   right: 25px;
   bottom : 20px;
-  animation:  ColorLogo 4s infinite;
+  animation: ColorLogo 4s infinite;
 }
 
 
 @keyframes ColorLogo {
-  0%{
+  0% {
     filter: grayscale(0);
   }
-  100%{
+
+  100% {
     filter: grayscale(15000);
   }
 }
+
 // .titre{
 //   z-index: 9;
 //   position: absolute;
@@ -250,7 +314,5 @@ export default {
 //   display: flex;
 //   justify-content: center;
 // }
-
-
 </style> 
 

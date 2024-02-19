@@ -1,7 +1,7 @@
 // function convertToXml(modelData) {
 //   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
 //   xml += `<definitions id="${modelData.$.id}" xmlns="${modelData.$['xmlns']}" xmlns:xsi="${modelData.$['xmlns:xsi']}" xmlns:bpmn="${modelData.$['xmlns:bpmn']}" xmlns:bpmndi="${modelData.$['xmlns:bpmndi']}" xmlns:omgdc="${modelData.$['xmlns:omgdc']}" xmlns:omgdi="${modelData.$['xmlns:omgdi']}" xmlns:camunda="${modelData.$['xmlns:camunda']}" targetNamespace="${modelData.$.targetNamespace}">\n`;
-  
+
 //   // Exporter information
 //   xml += `<exporter>${modelData.$.exporter}</exporter>\n`;
 //   xml += `<exporterVersion>${modelData.$.exporterVersion}</exporterVersion>\n`;
@@ -19,15 +19,31 @@
 //   });
 
 //   xml += `</definitions>`;
-  
+
 //   return xml;
 // }
 
-export function openDiagram(modeler, diagramXml) {
-  fetch(diagramXml)
-    .then(response => response.text())
-    .then(diagram => {
-      modeler.importXML(diagram, error => {
+const test=`
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="sid-38422fae-e03e-43a3-bef4-bd33b32041b2" targetNamespace="http://bpmn.io/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="16.4.0">
+  <process id="Process_0" isExecutable="false">
+    <startEvent id="StartEvent_1y45yut" name="Start" />
+  </process>
+  <bpmndi:BPMNDiagram id="BpmnDiagram_1">
+    <bpmndi:BPMNPlane id="BpmnPlane_1" bpmnElement="Process_0">
+      <bpmndi:BPMNShape id="StartEvent_1y45yut_di" bpmnElement="StartEvent_1y45yut">
+        <omgdc:Bounds x="152" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="159" y="145" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
+`
+
+ export  function openDiagram(modeler, diagramXml)  {
+      modeler.importXML(diagramXml==null ? test : diagramXml, error => {
         if (error) {
           console.error('Could not import BPMN diagram', error);
         } else {
@@ -36,13 +52,8 @@ export function openDiagram(modeler, diagramXml) {
           transactionBoundaries.show();
         }
       });
-    })
-    .catch(err => console.error('Error loading BPMN diagram', err));
 }
 
-// export function resetDiagramToBlank(modeler) {
-//   openDiagram(modeler, './InitDiagram.bpmn');
-// }
 
 export function saveDiagram(modeler) {
   modeler.saveXML({ format: true }, function (err, xml) {
@@ -80,5 +91,5 @@ export function SaveSvg(modeler) {
 }
 
 export function saveDiagramToLocal(DiagXml) {
-      window.localStorage.setItem('savedDiagram', DiagXml);
- }
+  window.localStorage.setItem('savedDiagram', DiagXml);
+}
