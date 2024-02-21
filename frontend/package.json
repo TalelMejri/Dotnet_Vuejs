@@ -14,6 +14,7 @@
     "bpmn-js-bpmnlint": "^0.22.2",
     "bpmn-js-embedded-comments": "^0.7.0",
     "bpmn-js-properties-panel": "^0.39.0",
+    "bpmn-js-task-priorities": "^0.2.0",
     "bpmn-js-token-simulation": "^0.33.0",
     "camunda-bpmn-moddle": "^4.5.0",
     "camunda-transaction-boundaries": "^1.1.2",

@@ -10,7 +10,7 @@
       <div class="flow-container">
         <div ref="content" class="containers">
           <div id="canvas" ref="canvas" class="canvas"></div>
-          <div id="properties" :class="propertiesVisible ? 'properties-visible' : 'properties'"></div>
+          <!-- <div id="properties" :class="propertiesVisible ? 'properties-visible' : 'properties'"></div> -->
         </div>
       </div>
       <div class="button-container">
@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import KeyboardModule from "bpmn-js/lib/features/keyboard/index.js";
+import CopyPasteModule from 'bpmn-js/lib/features/copy-paste';
 import { onMounted, ref, toRaw } from 'vue';
 import propertiesPanelModule from 'bpmn-js-properties-panel';
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
@@ -51,9 +53,14 @@ import TokenSimulationModule from 'bpmn-js-token-simulation';
 import ColorsBpm from "../colors/index";
 import transactionBoundariesModule from 'camunda-transaction-boundaries';
 import { openDiagram, saveDiagram, SaveSvg, saveDiagramToLocal } from "../Utils/diagram_util.js";
-import bpmnlintrc from '../../.bpmnlintrc';
-import lintModule from 'bpmn-js-bpmnlint';
-import 'bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css';
+import PriorityAwareModeler from "bpmn-js-task-priorities/lib/priorities"
+import "bpmn-js-task-priorities/assets/priorities.css"
+import KeyboardMoveModule from 'diagram-js/lib/navigation/keyboard-move';
+import MoveCanvasModule from 'diagram-js/lib/navigation/movecanvas';
+import ZoomScrollModule from 'diagram-js/lib/navigation/zoomscroll';
+// import bpmnlintrc from '../../.bpmnlintrc';
+// import lintModule from 'bpmn-js-bpmnlint';
+// import 'bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css';
 export default {
   setup() {
 
@@ -67,30 +74,40 @@ export default {
     onMounted(() => {
       const modeler = new Modeler({
         container: canvas.value,
-        propertiesPanel: {
-          parent: '#properties',
-        },
-        linting: {
-          bpmnlint: bpmnlintrc
-        },
+        // propertiesPanel: {
+        //   parent: '#properties',
+        // },
+        // linting: {
+        //   bpmnlint: bpmnlintrc
+        // },
         keyboard: {
           bindTo: window
         },
         additionalModules: [
-          propertiesPanelModule,
-          propertiesProviderModule,
+          // propertiesPanelModule,
+          // propertiesProviderModule,
           ColorsBpm,
           gridModule,
           TokenSimulationModule,
           CommentModule,
           transactionBoundariesModule,
-          lintModule
+          PriorityAwareModeler,
+          KeyboardModule,
+          // lintModule
         ],
         moddleExtensions: {
           camunda: camundaModdleDescriptor,
         }
       });
       test.value = modeler;
+      modeler.on('selection.changed', (e) => {
+        console.log(e.newSelection[0]);
+       //this.setElement(e.newSelection[0]);
+      });
+       modeler.on('element.changed', (e) => {
+        console.log(e.element);
+        //  this.setElement(e.element);
+      });
       openDiagram(modeler);
     });
 
@@ -102,27 +119,36 @@ export default {
         propertiesPanel: {
           parent: '#properties',
         },
-        linting: {
-          bpmnlint: bpmnlintrc
-        },
+        // linting: {
+        //   bpmnlint: bpmnlintrc
+        // },
         keyboard: {
           bindTo: window
         },
         additionalModules: [
-          propertiesPanelModule,
-          propertiesProviderModule,
+          //propertiesPanelModule,
+          //propertiesProviderModule,
           ColorsBpm,
           gridModule,
           TokenSimulationModule,
           CommentModule,
           transactionBoundariesModule,
-          lintModule
+          PriorityAwareModeler
+          // lintModule
         ],
         moddleExtensions: {
           camunda: camundaModdleDescriptor,
         }
       });
       test.value = modeler;
+      modeler.on('selection.changed', (e) => {
+        console.log(e.newSelection[0]);
+       //this.setElement(e.newSelection[0]);
+      });
+       modeler.on('element.changed', (e) => {
+        console.log(e.element);
+        //  this.setElement(e.element);
+      });
       openDiagram(modeler);
     };
 
@@ -140,26 +166,35 @@ export default {
           propertiesPanel: {
             parent: '#properties',
           },
-          linting: {
-            bpmnlint: bpmnlintrc
-          },
+          // linting: {
+          //   bpmnlint: bpmnlintrc
+          // },
           keyboard: {
             bindTo: window
           },
           additionalModules: [
-            propertiesPanelModule,
-            propertiesProviderModule,
+            // propertiesPanelModule,
+            // propertiesProviderModule,
             ColorsBpm,
             gridModule,
             TokenSimulationModule,
             CommentModule,
             transactionBoundariesModule,
-            lintModule
+            PriorityAwareModeler
+            // lintModule
           ],
           moddleExtensions: {
             camunda: camundaModdleDescriptor,
           }
         });
+        modeler.on('selection.changed', (e) => {
+        console.log(e.newSelection[0]);
+       //this.setElement(e.newSelection[0]);
+      });
+       modeler.on('element.changed', (e) => {
+        console.log(e.element);
+        //  this.setElement(e.element);
+      });
         test.value = modeler;
         openDiagram(modeler, e.target.result);
       };
