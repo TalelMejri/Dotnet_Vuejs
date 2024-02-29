@@ -1,8 +1,8 @@
 <template>
   <div>
-    <!-- <div class="titre"  data-aos="zoom-out" >
-       <h2>Neoledge Bpmn</h2>
-    </div> -->
+    <div class="titre" data-aos="zoom-out">
+      <h2>Neoledge Bpmn</h2>
+    </div>
     <div class="bpmn_content">
       <div class="img">
         <img src="../assets/images/neoledge.png">
@@ -10,231 +10,460 @@
       <div class="flow-container">
         <div ref="content" class="containers">
           <div id="canvas" ref="canvas" class="canvas"></div>
-          <!-- <div id="properties" :class="propertiesVisible ? 'properties-visible' : 'properties'"></div> -->
+          <custome_panel v-if="element" @UpdateValue="UpdateValue" @updatePropertyHeader="updatePropertyHeader"
+            @SetHeaders="SetHeaders" @DeleteOutput="DeleteOutput" @AddCodePython="AddCodePython" @AddOutputs="AddOutputs"
+            @UpdatePropertyInput="UpdatePropertyInput" @UpdatePropertyOutput="UpdatePropertyOutput"
+            @DeleteInput="DeleteInput" @AddInputs="AddInputs" :element="element" @setValue="setValue"
+            @updateActivityName="updateActivityName" @addFn="addFn" @updateProperties="updateProperties"
+            @deleteHeader="deleteHeader" class="properties">
+          </custome_panel>
         </div>
       </div>
       <div class="button-container">
-        <button type="button" @click="DownloadDiagramXml()">
+        <button type="button" @click="downloadDiagramXml()">
           <i class="fa fa-download"></i>
         </button>
-        <button type="button" @click="ResetDiagram()">
+        <button type="button" @click="resetDiagram()">
           <i class="fa fa-refresh"></i>
         </button>
-        <button type="button" @click="DownloadDiagramSvg()">
+        <button type="button" @click="downloadDiagramSvg()">
           <i class="fa fa-file-image-o"></i>
         </button>
-        <button type="button" @click="ShowComments()">
-          <i :class="!showComments ? 'fa fa-comments' : 'fa fa-times-circle'"></i>
-        </button>
-        <button type="button" @click="ToggleProperties">
-          Affiche Prop
-        </button>
-        <button type="button" @click="ImportDiagram">
+        <button type="button" @click="importDiagram">
           <i class="fa fa-upload"></i>
         </button>
-        <input type="file" accept=".bpmn" @change="HandleFileImport" ref="fileInput" style="display: none" />
+        <button type="button" @click="zoomIn">
+          +
+        </button>
+        <button type="button" @click="zoomOut">
+          -
+        </button>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          <i class="fa fa-keyboard-o"></i>
+        </button>
+
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Keyboard shortcuts</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="keyboard-shortcuts">
+                  <ul>
+                    <li>Undo Ctrl + Z</li>
+                    <li>Redo Ctrl + ⇧ + Z</li>
+                    <li>Select All Ctrl + A</li>
+                    <li>Hand Tool H</li>
+                    <li>Direct Editing E</li>
+                    <li>Lasso Tool L</li>
+                    <li>Create Milestone ⇧ + M</li>
+                    <li>Scrolling (Vertical) Ctrl + Scrolling</li>
+                    <li>Scrolling (Horizontal) Ctrl + ⇧ + Scrolling</li>
+                    <li>Attention Grabber A</li>
+                    <li>Space Tool S</li>
+                    <li>Search BPMN Symbol Ctrl + F</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button type="button" @click="SaveDiagram()">
+          <i class="fa fa-save"></i>
+        </button>
+        <input type="file" accept=".bpmn" @change="handleFileImport" ref="fileInput" style="display: none" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import KeyboardModule from "bpmn-js/lib/features/keyboard/index.js";
-import CopyPasteModule from 'bpmn-js/lib/features/copy-paste';
-import { onMounted, ref, toRaw } from 'vue';
-import propertiesPanelModule from 'bpmn-js-properties-panel';
-import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
-// import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
-import camundaModdleDescriptor from "../descriptor/camundaDescriptor.json"
+import { ref, onMounted, toRaw } from 'vue';
 import Modeler from "../Modeler/CustomBpmnModeler.js";
+import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
+import NeoledgeDescriptor from "../descriptor/NeoledgeDescriptor.json"
 import gridModule from 'diagram-js-grid';
 import CommentModule from "../comment_custom/index"
 import TokenSimulationModule from 'bpmn-js-token-simulation';
 import ColorsBpm from "../colors/index";
 import transactionBoundariesModule from 'camunda-transaction-boundaries';
-import { openDiagram, saveDiagram, SaveSvg, saveDiagramToLocal } from "../Utils/diagram_util.js";
-import PriorityAwareModeler from "bpmn-js-task-priorities/lib/priorities"
-import "bpmn-js-task-priorities/assets/priorities.css"
-import KeyboardMoveModule from 'diagram-js/lib/navigation/keyboard-move';
-import MoveCanvasModule from 'diagram-js/lib/navigation/movecanvas';
-import ZoomScrollModule from 'diagram-js/lib/navigation/zoomscroll';
-// import bpmnlintrc from '../../.bpmnlintrc';
-// import lintModule from 'bpmn-js-bpmnlint';
-// import 'bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css';
+import custome_panel from "@/components/custome_panel.vue";
+import { createElement, AddElementComposer, DeleteElement, UpdateElement } from "../properties_custom/utils.js";
+import { openLocalDiagram, saveDiagram, SaveSvg, saveDiagramToLocal, ResetDiagramLocal } from "../Utils/diagram_util.js";
+
 export default {
+  components: { custome_panel },
   setup() {
-
     const canvas = ref(null);
-    const test = ref(null);
-    const showComments = ref(false)
-    const fileInput = ref(null);
+    const element = ref(null);
     const propertiesVisible = ref(false);
-
+    const fileInput = ref(null);
+    const test = ref(null);
+    const keyboardShortcutsVisible = ref(false);
+    let zoomLevel = ref(1);
+    let modeler;
+    let bpmnElementRegistry;
+    let bpmnElementfactory;
 
     onMounted(() => {
-      const modeler = new Modeler({
-        container: canvas.value,
-        // propertiesPanel: {
-        //   parent: '#properties',
-        // },
-        // linting: {
-        //   bpmnlint: bpmnlintrc
-        // },
-        keyboard: {
-          bindTo: window
-        },
-        additionalModules: [
-          // propertiesPanelModule,
-          // propertiesProviderModule,
-          ColorsBpm,
-          gridModule,
-          TokenSimulationModule,
-          CommentModule,
-          transactionBoundariesModule,
-          PriorityAwareModeler,
-          KeyboardModule,
-          // lintModule
-        ],
-        moddleExtensions: {
-          camunda: camundaModdleDescriptor,
-        }
-      });
-      test.value = modeler;
-      modeler.on('selection.changed', (e) => {
-        console.log(e.newSelection[0]);
-       //this.setElement(e.newSelection[0]);
-      });
-       modeler.on('element.changed', (e) => {
-        console.log(e.element);
-        //  this.setElement(e.element);
-      });
-      openDiagram(modeler);
+      initializeModeler();
     });
 
-
-    const ResetDiagram = () => {
-      test.value.destroy();
-      const modeler = new Modeler({
+    const initializeModeler = () => {
+      modeler = new Modeler({
         container: canvas.value,
-        propertiesPanel: {
-          parent: '#properties',
-        },
-        // linting: {
-        //   bpmnlint: bpmnlintrc
-        // },
-        keyboard: {
-          bindTo: window
-        },
+        keyboard: { bindTo: window },
         additionalModules: [
-          //propertiesPanelModule,
-          //propertiesProviderModule,
+          propertiesProviderModule,
           ColorsBpm,
           gridModule,
           TokenSimulationModule,
           CommentModule,
           transactionBoundariesModule,
-          PriorityAwareModeler
-          // lintModule
         ],
-        moddleExtensions: {
-          camunda: camundaModdleDescriptor,
-        }
+        moddleExtensions: { neo : NeoledgeDescriptor }
       });
-      test.value = modeler;
-      modeler.on('selection.changed', (e) => {
-        console.log(e.newSelection[0]);
-       //this.setElement(e.newSelection[0]);
-      });
-       modeler.on('element.changed', (e) => {
-        console.log(e.element);
-        //  this.setElement(e.element);
-      });
-      openDiagram(modeler);
+
+      bpmnElementRegistry = modeler.get('elementRegistry');
+      bpmnElementfactory = modeler.get('bpmnFactory');
+
+      bindModelerEvents();
+      openLocalDiagram(modeler);
     };
 
-    const ImportDiagram = () => {
+    const bindModelerEvents = () => {
+      modeler.on('selection.changed', handleSelectionChange);
+      modeler.on('element.changed', handleElementChange);
+    };
+
+    const handleSelectionChange = (event) => {
+      const selectedElement = event.newSelection[0];
+      if (selectedElement !== undefined) {
+        element.value = [selectedElement.id, selectedElement.labels, selectedElement.type, selectedElement.businessObject];
+      } else {
+        element.value = null;
+      }
+    };
+
+    const zoomIn = () => {
+      if (zoomLevel.value < 3) {
+        zoomLevel.value += 0.1;
+        modeler.get('canvas').zoom(zoomLevel.value);
+      }
+    };
+
+    const zoomOut = () => {
+      if (zoomLevel.value > 0.2) {
+        zoomLevel.value -= 0.1;
+        modeler.get('canvas').zoom(zoomLevel.value);
+      }
+    };
+    const handleElementChange = (event) => {
+      const changedElement = event.element;
+      if (changedElement !== undefined) {
+        element.value = [changedElement.id, changedElement.labels, changedElement.type, changedElement.businessObject];
+      } else {
+        element.value = null;
+      }
+    };
+
+    const setValue = (name, value) => {
+      AddElementComposer(
+        element,
+        bpmnElementfactory,
+        "neo:Properties",
+        "neo:Property",
+        "properties",
+        "name",
+        name,
+        value
+      );
+    }
+
+    const AddInputs = (name, value) => {
+      AddElementComposer(
+        element,
+        bpmnElementfactory,
+        "neo:IoMapping",
+        "neo:Input",
+        "inputParameters",
+        "name",
+        name,
+        value
+      );
+    }
+
+
+    const SetHeaders = (key, value) => {
+      AddElementComposer(
+        element,
+        bpmnElementfactory,
+        "neo:TaskHeaders",
+        "neo:Header",
+        "values",
+        "key",
+        key,
+        value);
+    }
+
+    const AddOutputs = (name, value) => {
+      AddElementComposer(
+        element,
+        bpmnElementfactory,
+        "neo:IoMapping",
+        "neo:Output",
+        "outputParameters",
+        "name",
+        name,
+        value
+      );
+    }
+
+    const addFn = (type, retries) => {
+      const businessObject = toRaw(element.value[3]);
+      let extensionElements = businessObject.get('extensionElements');
+
+      if (!extensionElements) {
+        extensionElements = createElement('bpmn:ExtensionElements', {}, bpmnElementfactory);
+        businessObject.set('extensionElements', extensionElements);
+      }
+
+      let task_def = extensionElements.get('values').find(e => e.$type === 'neo:TaskDefinition');
+
+      if (!task_def) {
+        task_def = createElement('neo:TaskDefinition', { type: type, retries: retries }, bpmnElementfactory);
+        extensionElements.get('values').push(task_def);
+      } else {
+        task_def.type = type;
+        task_def.retries = retries;
+      }
+    };
+
+    const AddCodePython = (code) =>{
+      const businessObject = toRaw(element.value[3]);
+      let extensionElements = businessObject.get('extensionElements');
+
+      if (!extensionElements) {
+        extensionElements = createElement('bpmn:ExtensionElements', {}, bpmnElementfactory);
+        businessObject.set('extensionElements', extensionElements);
+      }
+
+      let code_python = extensionElements.get('values').find(e => e.$type === 'neo:PythonCode');
+
+      if (!code_python) {
+        code_python = createElement('neo:PythonCode', { code: code }, bpmnElementfactory);
+        extensionElements.get('values').push(code_python);
+      } 
+    }
+
+    
+
+    const DeleteInput = (properties) => {
+      DeleteElement(
+        element,
+        'neo:IoMapping',
+        bpmnElementfactory,
+        "inputParameters",
+        properties,
+        'neo:Input',
+        "source"
+      );
+    }
+
+    const DeleteOutput = (properties) => {
+      DeleteElement(
+        element,
+        'neo:IoMapping',
+        bpmnElementfactory,
+        "outputParameters",
+        properties,
+        'neo:Output',
+        "source"
+      );
+    }
+
+    const updateProperties = (properties) => {
+      DeleteElement(
+        element,
+        'neo:Properties',
+        bpmnElementfactory,
+        "properties",
+        properties,
+        'neo:Property',
+        "name"
+      );
+    };
+
+    const deleteHeader = (properties) => {
+      DeleteElement(
+        element,
+        'neo:TaskHeaders',
+        bpmnElementfactory,
+        "values",
+        properties,
+        'neo:Header',
+        "key"
+      );
+    }
+
+    const updateActivityName = newName => {
+      if (element && element.value) {
+        const elementNew = bpmnElementRegistry.get(element.value[3]["id"]);
+        modeler.get('modeling').updateProperties(elementNew, { name: newName });
+      } else {
+        console.log('null');
+      }
+    };
+
+    const UpdateValue = (newName, NewValue, name, value) => {
+      UpdateElement(
+        element,
+        'neo:Properties',
+        "properties",
+        "name",
+        name,
+        value,
+        newName,
+        NewValue
+      );
+    };
+
+    const updatePropertyHeader = (newName, NewValue, name, value) => {
+      UpdateElement(
+        element,
+        'neo:TaskHeaders',
+        "values",
+        "key",
+        name,
+        value,
+        newName,
+        NewValue
+      );
+    };
+
+    const UpdatePropertyInput = (newName, NewValue, name, value) => {
+      UpdateElement(
+        element,
+        'neo:IoMapping',
+        "inputParameters",
+        "source",
+        name,
+        value,
+        newName,
+        NewValue
+      );
+    }
+
+    const UpdatePropertyOutput = (newName, NewValue, name, value) => {
+      UpdateElement(
+        element,
+        'neo:IoMapping',
+        "outputParameters",
+        "source",
+        name,
+        value,
+        newName,
+        NewValue
+      );
+    }
+
+    const resetDiagram = () => {
+      modeler.destroy();
+      ResetDiagramLocal();
+      initializeModeler();
+    };
+
+    const importDiagram = () => {
       fileInput.value.click();
     };
 
-    const HandleFileImport = (event) => {
+    const handleFileImport = (event) => {
       const file = event.target.files[0];
       const reader = new FileReader();
       reader.onload = (e) => {
-        test.value.destroy();
-        const modeler = new Modeler({
+        modeler.destroy();
+        const newModeler = new Modeler({
           container: canvas.value,
-          propertiesPanel: {
-            parent: '#properties',
-          },
-          // linting: {
-          //   bpmnlint: bpmnlintrc
-          // },
-          keyboard: {
-            bindTo: window
-          },
+          propertiesPanel: { parent: '#properties' },
+          keyboard: { bindTo: window },
           additionalModules: [
-            // propertiesPanelModule,
-            // propertiesProviderModule,
-            ColorsBpm,
-            gridModule,
-            TokenSimulationModule,
-            CommentModule,
-            transactionBoundariesModule,
-            PriorityAwareModeler
-            // lintModule
+            ColorsBpm, gridModule, TokenSimulationModule,
+            CommentModule, transactionBoundariesModule,
           ],
-          moddleExtensions: {
-            camunda: camundaModdleDescriptor,
-          }
+          moddleExtensions: { neo : NeoledgeDescriptor }
         });
-        modeler.on('selection.changed', (e) => {
-        console.log(e.newSelection[0]);
-       //this.setElement(e.newSelection[0]);
-      });
-       modeler.on('element.changed', (e) => {
-        console.log(e.element);
-        //  this.setElement(e.element);
-      });
-        test.value = modeler;
-        openDiagram(modeler, e.target.result);
+        bpmnElementRegistry = newModeler.get('elementRegistry');
+        bpmnElementfactory = newModeler.get('bpmnFactory');
+        modeler = newModeler;
+        bindModelerEvents();
+        openLocalDiagram(modeler, e.target.result);
       };
       reader.readAsBinaryString(file);
     };
 
-    const DownloadDiagramXml = () => {
-      saveDiagram(toRaw(test.value))
+    const downloadDiagramXml = () => {
+      saveDiagram(toRaw(modeler))
     };
 
-    const DownloadDiagramSvg = async () => {
-      SaveSvg(test.value);
+    const downloadDiagramSvg = async () => {
+      SaveSvg(modeler);
     };
 
-    const ShowComments = () => {
-      showComments.value = !showComments.value;
-      const ListComments = document.querySelectorAll('.comments-overlay');
-      ListComments.forEach(element => {
-        if (showComments.value) {
-          element.classList.add('expanded');
-        } else {
-          element.classList.remove('expanded');
-        }
-      });
+    const toggleProperties = () => {
+      propertiesVisible.value = !propertiesVisible.value;
+    };
+
+    const SaveDiagram = () => {
+      saveDiagramToLocal(modeler);
     }
 
-    const ToggleProperties = () => {
-      propertiesVisible.value = !propertiesVisible.value;
+    const toggleKeyboardShortcutsVisibility = () => {
+      keyboardShortcutsVisible.value = !keyboardShortcutsVisible.value;
     };
 
 
     return {
-      canvas, DownloadDiagramXml, ResetDiagram,
-      DownloadDiagramSvg, ShowComments, showComments,
-      ImportDiagram, HandleFileImport, fileInput, ToggleProperties, propertiesVisible, test
+      canvas,
+      element,
+      propertiesVisible,
+      fileInput,
+      test,
+      addFn,
+      AddOutputs,
+      DeleteOutput,
+      setValue,
+      UpdateValue,
+      AddInputs,
+      SetHeaders,
+      updateProperties,
+      AddCodePython,
+      DeleteInput,
+      UpdatePropertyInput,
+      deleteHeader,
+      updateActivityName,
+      resetDiagram,
+      UpdatePropertyOutput,
+      updatePropertyHeader,
+      importDiagram,
+      keyboardShortcutsVisible,
+      toggleKeyboardShortcutsVisibility,
+      zoomIn,
+      zoomOut,
+      handleFileImport,
+      downloadDiagramXml,
+      downloadDiagramSvg,
+      toggleProperties,
+      SaveDiagram
     };
-  },
-};
+  }
+}
 </script>
-
 <style  lang="scss">
 @import '~bpmn-js/dist/assets/diagram-js.css';
 @import url("../assets/style/comments.css");
@@ -274,22 +503,22 @@ export default {
 }
 
 .properties {
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 300px;
-  height: 100%;
+  position: fixed;
+  border: 1px solid #ccc;
+  border-radius: 5px;
   overflow-y: scroll;
+  top: 0;
+  width: 320px;
+  right: 0;
+  height: 100%;
+  padding: 10px;
+  background-color: #f9f9f9;
 }
 
 .button-container {
   position: absolute;
   bottom: 0;
-  // left: 50%;
-  // transform: translateX(-50%);
   display: flex;
-
-  // justify-content: center;
   gap: 20px;
   padding: 0 0 5px 10px;
 
@@ -315,6 +544,7 @@ export default {
 .img {
   position: absolute;
   z-index: 98999999;
+  display: none;
   bottom: 0;
 
   img {
@@ -339,15 +569,34 @@ export default {
   }
 }
 
-// .titre{
-//   z-index: 9;
-//   position: absolute;
-//   padding-top: 10px;
-//   color: black;
-//   left: 40%;
-//   transform: translateX(-100%);
-//   display: flex;
-//   justify-content: center;
-// }
+.titre {
+  z-index: 9;
+  position: absolute;
+  padding-top: 10px;
+  color: black;
+  left: 40%;
+  transform: translateX(-100%);
+  display: flex;
+  justify-content: center;
+}
+
+.keyboard-shortcuts {
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  z-index: 1000;
+}
+
+
+.keyboard-shortcuts ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.keyboard-shortcuts li {
+  margin-bottom: 5px;
+}
 </style> 
 

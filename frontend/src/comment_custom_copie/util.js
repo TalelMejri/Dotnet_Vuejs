@@ -1,16 +1,17 @@
-
 import { toRaw } from "vue";
 
-export function _getCommentsElement(element,create) {
+export function _getCommentsElement(element, create) {
 
-    var bo = element.businessObject;
-    var docs = bo.get('documentation');
+  var bo = toRaw(element[3]);
+  var docs = bo['documentation'];
 
   var comments;
 
-  docs.some(function(d) {
-    return d.textFormat === 'text/x-comments' && (comments = d);
-  });
+  if(docs!=undefined){
+    docs.some(function(d) {
+      return d.textFormat === 'text/x-comments' && (comments = d);
+    });
+  }
 
   if (!comments && create) {
     comments = bo.$model.create('bpmn:Documentation', { textFormat: 'text/x-comments' });
@@ -48,7 +49,6 @@ export function addComment(element, author, str) {
   comments.push([ author, str ]);
 
   setComments(element, comments);
-  
 }
 
 export function removeComment(element, comment) {
@@ -67,9 +67,11 @@ export function removeComment(element, comment) {
     return matches;
   });
 
+
   if (idx !== -1) {
     comments.splice(idx, 1);
   }
-
+  
   setComments(element, comments);
+
 }

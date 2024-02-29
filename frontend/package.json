@@ -27,7 +27,8 @@
     "vue": "^3.2.13",
     "vue-bpmn": "^0.3.0",
     "vue-router": "^4.0.3",
-    "vuex": "^4.0.0"
+    "vuex": "^4.0.0",
+    "zeebe-bpmn-moddle": "^1.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~5.0.0",

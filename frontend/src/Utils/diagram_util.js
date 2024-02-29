@@ -1,29 +1,5 @@
-// function convertToXml(modelData) {
-//   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
-//   xml += `<definitions id="${modelData.$.id}" xmlns="${modelData.$['xmlns']}" xmlns:xsi="${modelData.$['xmlns:xsi']}" xmlns:bpmn="${modelData.$['xmlns:bpmn']}" xmlns:bpmndi="${modelData.$['xmlns:bpmndi']}" xmlns:omgdc="${modelData.$['xmlns:omgdc']}" xmlns:omgdi="${modelData.$['xmlns:omgdi']}" xmlns:camunda="${modelData.$['xmlns:camunda']}" targetNamespace="${modelData.$.targetNamespace}">\n`;
 
-//   // Exporter information
-//   xml += `<exporter>${modelData.$.exporter}</exporter>\n`;
-//   xml += `<exporterVersion>${modelData.$.exporterVersion}</exporterVersion>\n`;
-
-//   // BPMNDiagram
-//   xml += `<bpmndi:BPMNDiagram id="${modelData.bpmndi.BPMNDiagram[0].$.id}">\n`;
-//   // You would need to iterate through BPMNPlane and BPMNShape here
-//   xml += `</bpmndi:BPMNDiagram>\n`;
-
-//   // Process
-//   modelData.process.forEach(process => {
-//     xml += `<bpmn:process id="${process.$.id}" isExecutable="${process.$.isExecutable}">\n`;
-//     // You would need to iterate through each element inside the process here
-//     xml += `</bpmn:process>\n`;
-//   });
-
-//   xml += `</definitions>`;
-
-//   return xml;
-// }
-
-const test=`
+const InitialDiagram = `
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="sid-38422fae-e03e-43a3-bef4-bd33b32041b2" targetNamespace="http://bpmn.io/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="16.4.0">
   <process id="Process_0" isExecutable="false">
@@ -42,18 +18,23 @@ const test=`
 </definitions>
 `
 
- export  function openDiagram(modeler, diagramXml)  {
-      modeler.importXML(diagramXml==null ? test : diagramXml, error => {
-        if (error) {
-          console.error('Could not import BPMN diagram', error);
-        } else {
-          modeler.get('canvas').zoom('fit-viewport');
-          var transactionBoundaries = modeler.get('transactionBoundaries');
-          transactionBoundaries.show();
-        }
-      });
+export function openDiagram(modeler, diagramXml) {
+  modeler.importXML(diagramXml, error => {
+    if (error) {
+      console.error('Could not import BPMN diagram', error);
+    } else {
+      modeler.get('canvas').zoom('fit-viewport');
+      var transactionBoundaries = modeler.get('transactionBoundaries');
+      transactionBoundaries.show();
+    }
+  });
 }
 
+export function openLocalDiagram(modeler) {
+  let localDiagram = localStorage.getItem("savedDiagram");
+  let diagram = localDiagram ? localDiagram : InitialDiagram;
+  return openDiagram(modeler, diagram);
+}
 
 export function saveDiagram(modeler) {
   modeler.saveXML({ format: true }, function (err, xml) {
@@ -90,6 +71,13 @@ export function SaveSvg(modeler) {
   });
 }
 
-export function saveDiagramToLocal(DiagXml) {
-  window.localStorage.setItem('savedDiagram', DiagXml);
+export function saveDiagramToLocal(modeler) {
+  modeler.saveXML({ format: true }, function (err, xml) {
+    localStorage.setItem("savedDiagram", xml);
+  });
 }
+
+export function ResetDiagramLocal(){
+  localStorage.removeItem("savedDiagram");
+}
+
