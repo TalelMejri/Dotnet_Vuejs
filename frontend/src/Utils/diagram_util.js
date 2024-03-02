@@ -30,10 +30,15 @@ export function openDiagram(modeler, diagramXml) {
   });
 }
 
-export function openLocalDiagram(modeler) {
-  let localDiagram = localStorage.getItem("savedDiagram");
-  let diagram = localDiagram ? localDiagram : InitialDiagram;
-  return openDiagram(modeler, diagram);
+export function openLocalDiagram(modeler, local) {
+  if (local == null) {
+    let localDiagram = localStorage.getItem("savedDiagram");
+    let diagram = localDiagram ? localDiagram : InitialDiagram;
+    return openDiagram(modeler, diagram);
+  } else {
+    return openDiagram(modeler, local);
+  }
+
 }
 
 export function saveDiagram(modeler) {
@@ -77,7 +82,7 @@ export function saveDiagramToLocal(modeler) {
   });
 }
 
-export function ResetDiagramLocal(){
+export function ResetDiagramLocal() {
   localStorage.removeItem("savedDiagram");
 }
 

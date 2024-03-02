@@ -1,4 +1,4 @@
-import Modeler from "bpmn-js/lib/Modeler";
+import Modeler from "bpmn-js/lib/Modeler.js";
 
 // import CustomModule from "../custom";
 

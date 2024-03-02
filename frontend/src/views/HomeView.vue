@@ -10,12 +10,12 @@
       <div class="flow-container">
         <div ref="content" class="containers">
           <div id="canvas" ref="canvas" class="canvas"></div>
-          <custome_panel v-if="element" @UpdateValue="UpdateValue" @updatePropertyHeader="updatePropertyHeader"
-            @SetHeaders="SetHeaders" @DeleteOutput="DeleteOutput" @AddCodePython="AddCodePython" @AddOutputs="AddOutputs"
-            @UpdatePropertyInput="UpdatePropertyInput" @UpdatePropertyOutput="UpdatePropertyOutput"
-            @DeleteInput="DeleteInput" @AddInputs="AddInputs" :element="element" @setValue="setValue"
-            @updateActivityName="updateActivityName" @addFn="addFn" @updateProperties="updateProperties"
-            @deleteHeader="deleteHeader" class="properties">
+          <custome_panel v-if="element" @UpdateValue="UpdateValue" @AddTimer="AddTimer"
+            @updatePropertyHeader="updatePropertyHeader" @SetHeaders="SetHeaders" @DeleteOutput="DeleteOutput"
+            @AddCodePython="AddCodePython" @AddOutputs="AddOutputs" @UpdatePropertyInput="UpdatePropertyInput"
+            @UpdatePropertyOutput="UpdatePropertyOutput" @DeleteInput="DeleteInput" @AddInputs="AddInputs"
+            :element="element" @setValue="setValue" @updateActivityName="updateActivityName" @addFn="addFn"
+            @updateProperties="updateProperties" @deleteHeader="deleteHeader" class="properties">
           </custome_panel>
         </div>
       </div>
@@ -41,8 +41,6 @@
         <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
           <i class="fa fa-keyboard-o"></i>
         </button>
-
-
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -80,28 +78,32 @@
         <input type="file" accept=".bpmn" @change="handleFileImport" ref="fileInput" style="display: none" />
       </div>
     </div>
+    <div>
+     
+    </div>
   </div>
 </template>
 
 <script>
 import { ref, onMounted, toRaw } from 'vue';
 import Modeler from "../Modeler/CustomBpmnModeler.js";
-import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
 import NeoledgeDescriptor from "../descriptor/NeoledgeDescriptor.json"
 import gridModule from 'diagram-js-grid';
 import CommentModule from "../comment_custom/index"
-import TokenSimulationModule from 'bpmn-js-token-simulation';
+import TokenSimulationModule from '../bpmn-js-token-simulation/index.js';
 import ColorsBpm from "../colors/index";
 import transactionBoundariesModule from 'camunda-transaction-boundaries';
 import custome_panel from "@/components/custome_panel.vue";
 import { createElement, AddElementComposer, DeleteElement, UpdateElement } from "../properties_custom/utils.js";
 import { openLocalDiagram, saveDiagram, SaveSvg, saveDiagramToLocal, ResetDiagramLocal } from "../Utils/diagram_util.js";
-
+import Linter from "../LinterElement/index.js"
+import { errors } from "../LinterElement/util.js"
 export default {
   components: { custome_panel },
   setup() {
     const canvas = ref(null);
     const element = ref(null);
+    const error = ref(errors);
     const propertiesVisible = ref(false);
     const fileInput = ref(null);
     const test = ref(null);
@@ -112,6 +114,7 @@ export default {
     let bpmnElementfactory;
 
     onMounted(() => {
+    
       initializeModeler();
     });
 
@@ -120,21 +123,21 @@ export default {
         container: canvas.value,
         keyboard: { bindTo: window },
         additionalModules: [
-          propertiesProviderModule,
           ColorsBpm,
           gridModule,
           TokenSimulationModule,
           CommentModule,
           transactionBoundariesModule,
+          Linter
         ],
-        moddleExtensions: { neo : NeoledgeDescriptor }
+        moddleExtensions: { neo: NeoledgeDescriptor }
       });
 
       bpmnElementRegistry = modeler.get('elementRegistry');
       bpmnElementfactory = modeler.get('bpmnFactory');
 
       bindModelerEvents();
-      openLocalDiagram(modeler);
+      openLocalDiagram(modeler, null);
     };
 
     const bindModelerEvents = () => {
@@ -145,11 +148,23 @@ export default {
     const handleSelectionChange = (event) => {
       const selectedElement = event.newSelection[0];
       if (selectedElement !== undefined) {
+        // const overlays = modeler.get('overlays');
         element.value = [selectedElement.id, selectedElement.labels, selectedElement.type, selectedElement.businessObject];
+        // createIcon(selectedElement, overlays);
+        CheckStatus(element.value);
       } else {
         element.value = null;
       }
     };
+
+    const CheckStatus = (element) => {
+      if (element[3]["status"] == undefined) {
+        const elementNew = bpmnElementRegistry.get(element[3]["id"]);
+        modeler.get('modeling').updateProperties(elementNew, { status: 0 });
+      } else {
+        console.log('null');
+      }
+    }
 
     const zoomIn = () => {
       if (zoomLevel.value < 3) {
@@ -164,6 +179,7 @@ export default {
         modeler.get('canvas').zoom(zoomLevel.value);
       }
     };
+    
     const handleElementChange = (event) => {
       const changedElement = event.element;
       if (changedElement !== undefined) {
@@ -193,12 +209,11 @@ export default {
         "neo:IoMapping",
         "neo:Input",
         "inputParameters",
-        "name",
+        "source",
         name,
         value
       );
     }
-
 
     const SetHeaders = (key, value) => {
       AddElementComposer(
@@ -219,7 +234,7 @@ export default {
         "neo:IoMapping",
         "neo:Output",
         "outputParameters",
-        "name",
+        "source",
         name,
         value
       );
@@ -245,7 +260,7 @@ export default {
       }
     };
 
-    const AddCodePython = (code) =>{
+    const AddCodePython = (code) => {
       const businessObject = toRaw(element.value[3]);
       let extensionElements = businessObject.get('extensionElements');
 
@@ -259,10 +274,38 @@ export default {
       if (!code_python) {
         code_python = createElement('neo:PythonCode', { code: code }, bpmnElementfactory);
         extensionElements.get('values').push(code_python);
-      } 
+      }
+      RefreshDiagram();
     }
 
-    
+    const AddTimer = (timer) => {
+      const businessObject = toRaw(element.value[3]);
+      let extensionElements = businessObject.get('extensionElements');
+      if (!extensionElements) {
+        extensionElements = createElement('bpmn:ExtensionElements', {}, bpmnElementfactory);
+        businessObject.set('extensionElements', extensionElements);
+      }
+      let timerCycle = extensionElements.get('values').find(e => e.$type === 'neo:TimerCycle');
+      if (!timerCycle) {
+        timerCycle = createElement('neo:TimerCycle', { time: timer }, bpmnElementfactory);
+        extensionElements.get('values').push(timerCycle);
+      }
+      RefreshDiagram();
+    }
+
+    const RefreshDiagram = () => {
+      modeler.saveXML({ format: true }, function (err, updatedXml) {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        modeler.importXML(updatedXml, function (err) {
+          if (err) {
+            console.error(err);
+          }
+        });
+      });
+    }
 
     const DeleteInput = (properties) => {
       DeleteElement(
@@ -388,19 +431,22 @@ export default {
       const reader = new FileReader();
       reader.onload = (e) => {
         modeler.destroy();
-        const newModeler = new Modeler({
+        modeler = new Modeler({
           container: canvas.value,
-          propertiesPanel: { parent: '#properties' },
           keyboard: { bindTo: window },
           additionalModules: [
-            ColorsBpm, gridModule, TokenSimulationModule,
-            CommentModule, transactionBoundariesModule,
+            ColorsBpm,
+            gridModule,
+            TokenSimulationModule,
+            CommentModule,
+            transactionBoundariesModule,
           ],
-          moddleExtensions: { neo : NeoledgeDescriptor }
+          moddleExtensions: { neo: NeoledgeDescriptor }
         });
-        bpmnElementRegistry = newModeler.get('elementRegistry');
-        bpmnElementfactory = newModeler.get('bpmnFactory');
-        modeler = newModeler;
+
+        bpmnElementRegistry = modeler.get('elementRegistry');
+        bpmnElementfactory = modeler.get('bpmnFactory');
+
         bindModelerEvents();
         openLocalDiagram(modeler, e.target.result);
       };
@@ -427,12 +473,12 @@ export default {
       keyboardShortcutsVisible.value = !keyboardShortcutsVisible.value;
     };
 
-
     return {
       canvas,
       element,
       propertiesVisible,
       fileInput,
+      error,
       test,
       addFn,
       AddOutputs,
@@ -444,6 +490,7 @@ export default {
       updateProperties,
       AddCodePython,
       DeleteInput,
+      AddTimer,
       UpdatePropertyInput,
       deleteHeader,
       updateActivityName,
@@ -464,14 +511,14 @@ export default {
   }
 }
 </script>
+
 <style  lang="scss">
 @import '~bpmn-js/dist/assets/diagram-js.css';
 @import url("../assets/style/comments.css");
 @import '~bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css';
 @import '~bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
-@import '~bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css';
 @import 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css';
-@import '~bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css';
+@import url("../assets/style/bpmn-js-token-simulation.css");
 
 .djs-popup.color-picker .djs-popup-body .entry {
   margin: 2px;
@@ -558,7 +605,6 @@ export default {
   animation: ColorLogo 4s infinite;
 }
 
-
 @keyframes ColorLogo {
   0% {
     filter: grayscale(0);
@@ -567,6 +613,10 @@ export default {
   100% {
     filter: grayscale(15000);
   }
+}
+
+.button-container.hidden {
+  display: none;
 }
 
 .titre {
@@ -588,7 +638,6 @@ export default {
   z-index: 1000;
 }
 
-
 .keyboard-shortcuts ul {
   list-style: none;
   padding: 0;
@@ -597,6 +646,21 @@ export default {
 
 .keyboard-shortcuts li {
   margin-bottom: 5px;
+}
+
+.icon-invalid {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 20px;
+  cursor: pointer;
 }
 </style> 
 

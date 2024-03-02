@@ -1,6 +1,3 @@
-
-import { toRaw } from "vue";
-
 export function _getCommentsElement(element,create) {
 
     var bo = element.businessObject;
@@ -73,3 +70,4 @@ export function removeComment(element, comment) {
 
   setComments(element, comments);
 }
+

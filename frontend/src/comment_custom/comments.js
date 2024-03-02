@@ -1,7 +1,6 @@
 
 import {
   getComments,
-
 } from './util';
 
 
@@ -21,3 +20,4 @@ export default function Comments(eventBus) {
 function defer(fn) {
   setTimeout(fn, 0);
 }
+

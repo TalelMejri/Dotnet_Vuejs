@@ -39,7 +39,13 @@
             </div>
             <div v-else>
                 <div class="NameContent">
-                    <span class="text">Name : </span> {{ element[2].split(':')[1] }}
+                    <p  v-if="element[2].split(':')[0] !='bpmn'"> 
+                       <span class="text" v-if="element[3]['eventDefinitions']!=undefined"> Name : {{ element[3]['eventDefinitions'][0]["$type"].split(':')[1] }}</span>
+                       <span class="text" v-else>  Name : {{ element[3]["$type"].split(':')[1] }}</span>
+                    </p>
+                    <p v-else >
+                        <span  class="text">Name : </span>  {{ element[2].split(':')[1]  }}
+                    </p>
                 </div>
                 <div class="mt-2">
                     <div class="accordion" id="accordionExample">
@@ -53,7 +59,7 @@
                             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
                                 data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    <input class="form-control mb-2" v-model="name" @keypress="ChangeName" type="text"
+                                    <input class="form-control mb-2" v-model="name" @input="ChangeName" type="text"
                                         placeholder="Name" />
                                     <input class="form-control" v-model="id" type="text" placeholder="id" />
                                 </div>
@@ -77,6 +83,21 @@
                             </div>
                         </div>
 
+                        <div class="accordion-item" v-if="element[3]['eventDefinitions']!=undefined && element[3]['eventDefinitions'][0]['$type'].split(':')[1]=='TimerEventDefinition'">
+                            <h2 class="accordion-header" id="headingTimer">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#taskTimer" aria-expanded="false" aria-controls="taskTimer">
+                                        Timer
+                                </button>
+                            </h2>
+                            <div id="taskTimer" class="accordion-collapse collapse " aria-labelledby="headingTimer"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <input :class="Timer!='' ? 'form-control mb-2' :'form-control mb-2 is-invalid'" v-model="Timer" type="text" placeholder="Add Time With Minute" />
+                                    <button @click="AddTimer()">Add Timer</button>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="accordion-item" v-if="element[2].split(':')[1] === 'SendTask'">
                             <h2 class="accordion-header" id="headingHeaders">
@@ -127,8 +148,10 @@
                                     <div class="content_prop">
                                         <div class="card  mb-2">
                                             <div class="card-body">
-                                                <textarea :class="error_code == '' ? 'form-control' : 'form-control is-invalid'" name="text"
-                                                    placeholder="Enter Your Code Here" v-model="code_python" @input="checkCode()"></textarea>
+                                                <textarea
+                                                    :class="error_code == '' && code_python !='' ? 'form-control' : 'form-control is-invalid'"
+                                                    name="text" placeholder="Enter Your Code Here" v-model="code_python"
+                                                    @input="checkCode()"></textarea>
                                                 <small v-if="error_code != ''" class="text-danger">{{ error_code }}</small>
                                             </div>
                                             <div class="d-flex gap-2 justify-content-center mb-2">
@@ -275,6 +298,8 @@ export default {
     methods: {
         InitMethods() {
             if (this.element[0] != null) {
+                this.getCodePython();
+                this.getTimer();
                 this.getAllComments();
                 this.getAllProperties();
                 this.getTaskDefinition();
@@ -288,37 +313,63 @@ export default {
             this.commentInput = "";
             this.AllComments = getComments(this.element);
             if (this.element[3]['extensionElements'] != undefined) {
-                let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:Properties'));
-                if (test) {
-                    let tab = test['properties'];
-                    tab.forEach((val) => {
-                        this.AllProperties.push({ name: val.name, value: val.value })
-                    })
+                if (this.element[3]['extensionElements']['values'] != undefined) {
+                    let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:Properties'));
+                    if (test) {
+                        let tab = test['properties'];
+                        tab.forEach((val) => {
+                            this.AllProperties.push({ name: val.name, value: val.value })
+                        })
+                    }
                 }
             }
         },
         getAllHeaders() {
             this.AllHeaders = [];
             if (this.element[3]['extensionElements'] != undefined) {
-                let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:TaskHeaders'));
-                if (test) {
-                    let tab = test['values'];
-                    tab.forEach((val) => {
-                        this.AllHeaders.push({ key: val.key, value: val.value })
-                    })
+                if (this.element[3]['extensionElements']['values'] != undefined) {
+                    let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:TaskHeaders'));
+                    if (test) {
+                        let tab = test['values'];
+                        tab.forEach((val) => {
+                            this.AllHeaders.push({ key: val.key, value: val.value })
+                        })
+                    }
                 }
             }
         },
         getAllInputs() {
             this.AllInputs = [];
             if (this.element[3]['extensionElements'] != undefined) {
-                let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:IoMapping'));
-                if (test) {
-                    let tab = test['inputParameters'];
-                    if (tab) {
-                        tab.forEach((val) => {
-                            this.AllInputs.push({ name: val.source, value: val.target })
-                        })
+                if (this.element[3]['extensionElements']['values'] != undefined) {
+                    let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:IoMapping'));
+                    if (test) {
+                        let tab = test['inputParameters'];
+                        if (tab) {
+                            tab.forEach((val) => {
+                                this.AllInputs.push({ name: val.source, value: val.target })
+                            })
+                        }
+                    }
+                }
+            }
+        },
+        getCodePython(){
+            if (this.element[3]['extensionElements'] != undefined) {
+                if (this.element[3]['extensionElements']['values'] != undefined) {
+                    let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:PythonCode'));
+                    if (test) {
+                        this.code_python = test['code']
+                    }
+                }
+            }
+        },
+        getTimer(){
+            if (this.element[3]['extensionElements'] != undefined) {
+                if (this.element[3]['extensionElements']['values'] != undefined) {
+                    let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:TimerCycle'));
+                    if (test) {
+                        this.Timer = test['time']
                     }
                 }
             }
@@ -327,23 +378,27 @@ export default {
             this.TypeFx = "";
             this.Retries = ""
             if (this.element[3]['extensionElements'] != undefined) {
-                let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:TaskDefinition'));
-                if (test) {
-                    this.TypeFx = test['type']
-                    this.Retries = test['retries']
+                if (this.element[3]['extensionElements']['values'] != undefined) {
+                    let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:TaskDefinition'));
+                    if (test) {
+                        this.TypeFx = test['type']
+                        this.Retries = test['retries']
+                    }
                 }
             }
         },
         getAllOutputs() {
             this.AllOutputs = [];
             if (this.element[3]['extensionElements'] != undefined) {
-                let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:IoMapping'));
-                if (test) {
-                    let tab = test['outputParameters'];
-                    if (tab) {
-                        tab.forEach((val) => {
-                            this.AllOutputs.push({ name: val.source, value: val.target })
-                        })
+                if (this.element[3]['extensionElements']['values'] != undefined) {
+                    let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:IoMapping'));
+                    if (test) {
+                        let tab = test['outputParameters'];
+                        if (tab) {
+                            tab.forEach((val) => {
+                                this.AllOutputs.push({ name: val.source, value: val.target })
+                            })
+                        }
                     }
                 }
             }
@@ -463,7 +518,7 @@ export default {
             this.$emit('AddOutputs', this.localNameOutPut, this.variable_fxOutput);
             this.InitMethods();
         },
-        checkCode(){
+        checkCode() {
             if (this.isPythonCode(this.code_python) && this.code_python != "") {
                 this.error_code = "";
                 return true;
@@ -473,10 +528,12 @@ export default {
             }
         },
         AddCode() {
-          if(this.checkCode(this.code_python)){
-            console.log("sds");
-            this.$emit("AddCodePython",this.code_python);
-          }
+            if (this.checkCode(this.code_python)) {
+                this.$emit("AddCodePython", this.code_python);
+            }
+        },
+        AddTimer(){
+            this.$emit("AddTimer", this.Timer);
         }
     },
     data() {
@@ -495,6 +552,7 @@ export default {
             showEdit: false,
             value_form: '',
             TypeFx: "",
+            Timer:"",
             Retries: "",
             showHeadersEdit: false,
             key: "",

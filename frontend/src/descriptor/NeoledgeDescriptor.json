@@ -497,6 +497,19 @@
           "isAttr": true
         }
       ]
+    },
+    {
+      "name": "TimerCycle",
+      "superClass": [
+        "Element"
+      ],
+      "properties": [
+        {
+          "name": "time",
+          "type": "String",
+          "isAttr": true
+        }
+      ]
     }
   ]
 }
