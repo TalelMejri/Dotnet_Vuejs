@@ -38,6 +38,9 @@
         <button type="button" @click="zoomOut">
           -
         </button>
+        <button type="button" @click="ToggleSimulation()">
+          Start
+        </button>
         <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
           <i class="fa fa-keyboard-o"></i>
         </button>
@@ -79,7 +82,7 @@
       </div>
     </div>
     <div>
-     
+
     </div>
   </div>
 </template>
@@ -90,7 +93,7 @@ import Modeler from "../Modeler/CustomBpmnModeler.js";
 import NeoledgeDescriptor from "../descriptor/NeoledgeDescriptor.json"
 import gridModule from 'diagram-js-grid';
 import CommentModule from "../comment_custom/index"
-import TokenSimulationModule from '../bpmn-js-token-simulation/index.js';
+import TokenSimulationModule from '../bpmn-js-token-simulation/lib/simulation-support/index.js';
 import ColorsBpm from "../colors/index";
 import transactionBoundariesModule from 'camunda-transaction-boundaries';
 import custome_panel from "@/components/custome_panel.vue";
@@ -98,6 +101,8 @@ import { createElement, AddElementComposer, DeleteElement, UpdateElement } from 
 import { openLocalDiagram, saveDiagram, SaveSvg, saveDiagramToLocal, ResetDiagramLocal } from "../Utils/diagram_util.js";
 import Linter from "../LinterElement/index.js"
 import { errors } from "../LinterElement/util.js"
+import SimulationSupportModule from 'bpmn-js-token-simulation/lib/simulation-support';
+import { toggleMode } from "../SimulationNeoledge/utils.js"
 export default {
   components: { custome_panel },
   setup() {
@@ -114,7 +119,7 @@ export default {
     let bpmnElementfactory;
 
     onMounted(() => {
-    
+
       initializeModeler();
     });
 
@@ -125,7 +130,7 @@ export default {
         additionalModules: [
           ColorsBpm,
           gridModule,
-          TokenSimulationModule,
+          SimulationSupportModule,
           CommentModule,
           transactionBoundariesModule,
           Linter
@@ -135,6 +140,7 @@ export default {
 
       bpmnElementRegistry = modeler.get('elementRegistry');
       bpmnElementfactory = modeler.get('bpmnFactory');
+
 
       bindModelerEvents();
       openLocalDiagram(modeler, null);
@@ -173,13 +179,21 @@ export default {
       }
     };
 
+    const ToggleSimulation = () => {
+      const eventBus = modeler.get('eventBus');
+      const canvas = modeler.get('canvas');
+      const selection = modeler.get('selection');
+      const contextPad = modeler.get('contextPad');
+      toggleMode(true,eventBus, canvas , selection, contextPad);
+    }
+
     const zoomOut = () => {
       if (zoomLevel.value > 0.2) {
         zoomLevel.value -= 0.1;
         modeler.get('canvas').zoom(zoomLevel.value);
       }
     };
-    
+
     const handleElementChange = (event) => {
       const changedElement = event.element;
       if (changedElement !== undefined) {
@@ -437,7 +451,7 @@ export default {
           additionalModules: [
             ColorsBpm,
             gridModule,
-            TokenSimulationModule,
+            SimulationSupportModule,
             CommentModule,
             transactionBoundariesModule,
           ],
@@ -502,6 +516,7 @@ export default {
       toggleKeyboardShortcutsVisibility,
       zoomIn,
       zoomOut,
+      ToggleSimulation,
       handleFileImport,
       downloadDiagramXml,
       downloadDiagramSvg,
@@ -512,7 +527,7 @@ export default {
 }
 </script>
 
-<style  lang="scss">
+<style lang="scss">
 @import '~bpmn-js/dist/assets/diagram-js.css';
 @import url("../assets/style/comments.css");
 @import '~bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css';
@@ -662,5 +677,4 @@ export default {
   line-height: 20px;
   cursor: pointer;
 }
-</style> 
-
+</style>

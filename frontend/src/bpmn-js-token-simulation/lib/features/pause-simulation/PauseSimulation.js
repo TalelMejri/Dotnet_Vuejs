@@ -24,7 +24,6 @@ const PAUSE_MARKUP = PauseIcon();
 
 const HIGH_PRIORITY = 1500;
 
-
 export default function PauseSimulation(
     eventBus, tokenSimulationPalette,
     notifications, canvas) {
@@ -40,7 +39,6 @@ export default function PauseSimulation(
 
   this._init();
 
-  // unpause on simulation start
   eventBus.on(SCOPE_CREATE_EVENT, HIGH_PRIORITY, event => {
     this.activate();
     this.unpause();

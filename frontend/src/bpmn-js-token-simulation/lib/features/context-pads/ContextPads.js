@@ -55,6 +55,7 @@ export default function ContextPads(
   this.registerHandler('bpmn:Activity', TriggerHandler);
 
   eventBus.on(TOGGLE_MODE_EVENT, LOW_PRIORITY, context => {
+
     const active = context.active;
 
     if (active) {

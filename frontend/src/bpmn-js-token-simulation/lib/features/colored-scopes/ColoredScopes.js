@@ -8,7 +8,6 @@ const HIGH_PRIORITY = 1500;
 
 
 export default function ColoredScopes(eventBus) {
-
   const colors = randomColor({
     count: 60
   }).filter(c => getContrastYIQ(c.substring(1)) < 200);

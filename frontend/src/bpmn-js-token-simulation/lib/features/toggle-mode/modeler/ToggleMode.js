@@ -77,8 +77,7 @@ ToggleMode.prototype.toggleMode = function (active = !this._active) {
       btn.classList.add("hidden")
     }
   } else {
-    this._container.innerHTML = `Start Process <span class="bts-toggle">${ToggleOffIcon()}</span>`;
-
+   this._container.innerHTML = `Start Process <span class="bts-toggle">${ToggleOffIcon()}</span>`;
     domClasses(this._canvasParent).remove('simulation');
     domClasses(this._palette).remove('hidden');
     btn.classList.remove("hidden")

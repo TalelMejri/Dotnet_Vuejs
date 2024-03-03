@@ -20,9 +20,7 @@ export default class Scope {
     this.element = element;
     this.parent = parent;
     this.initiator = initiator;
-    console.log(element);
     this.subscriptions = new Set();
-
     this.children = [];
     this.state = ScopeStates.ACTIVATED;
   }
