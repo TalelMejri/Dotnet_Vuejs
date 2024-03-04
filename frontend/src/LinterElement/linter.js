@@ -7,11 +7,18 @@ const colorImageSvg = `
     <line x1="12" y1="16" x2="12" y2="16"></line>
 </svg>
 `;
+const CorrectIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-check-circle">
+  <circle cx="12" cy="12" r="10"></circle>
+  <path d="M9 12l2 2 4-4"></path>
+</svg>
 
+`;
 import { addError, removeError } from "./util"
+import { ELEMENT_CHANGED_EVENT, PLAY_SIMULATION_EVENT } from '@/bpmn-js-token-simulation/lib/util/EventHelper';
 
 export default function Linter(eventBus, overlays) {
-  
+
   function createIcon(element) {
     var $overlay = $(colorImageSvg);
     $overlay.click(function (e) {
@@ -25,6 +32,34 @@ export default function Linter(eventBus, overlays) {
       html: $overlay
     });
   }
+
+  function createIconCorrect(element) {
+    var $overlay = $(CorrectIcon);
+    $overlay.click(function (e) {
+      console.log("error");
+    });
+    overlays.add(element, 'icons', {
+      position: {
+        bottom: 10,
+        right: 10
+      },
+      html: $overlay
+    });
+  }
+
+  eventBus.on(ELEMENT_CHANGED_EVENT, function (event) {
+    var element = event.element;
+    if (element.labelTarget ||
+      !element.businessObject.$instanceOf('bpmn:FlowNode')) {
+      return;
+    }
+    if (element.businessObject.
+      $attrs.status==0) {
+        createIcon(element);
+    }else{
+        createIconCorrect(element);
+    }
+  });
 
   eventBus.on(['shape.changed', 'shape.added'], function (event) {
     var element = event.element;

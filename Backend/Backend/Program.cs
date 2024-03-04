@@ -35,22 +35,33 @@ builder.Services.AddElsa(elsa =>
     elsa.UseHttp();
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyCorsPolicy", builder =>
+    {
+        builder.WithOrigins("http://localhost:8080") 
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 builder.Services.AddControllersWithViews();
+
+
 
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
 app.UseStaticFiles();
-
+app.UseCors("MyCorsPolicy");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.UseRouting();
 
 app.UseAuthorization();
-
 // Configure the HTTP request pipeline.
 app.UseHttpsRedirection();
 app.UseStaticFiles();

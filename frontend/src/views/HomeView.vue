@@ -38,9 +38,7 @@
         <button type="button" @click="zoomOut">
           -
         </button>
-        <button type="button" @click="ToggleSimulation()">
-          Start
-        </button>
+        <button type="button" id="simulationToggleButton" @click="ToggleSimulation()">Start</button>
         <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
           <i class="fa fa-keyboard-o"></i>
         </button>
@@ -93,21 +91,22 @@ import Modeler from "../Modeler/CustomBpmnModeler.js";
 import NeoledgeDescriptor from "../descriptor/NeoledgeDescriptor.json"
 import gridModule from 'diagram-js-grid';
 import CommentModule from "../comment_custom/index"
-import TokenSimulationModule from '../bpmn-js-token-simulation/lib/simulation-support/index.js';
+import TokenSimulationModule from '../bpmn-js-token-simulation/lib/modeler.js';
 import ColorsBpm from "../colors/index";
 import transactionBoundariesModule from 'camunda-transaction-boundaries';
 import custome_panel from "@/components/custome_panel.vue";
 import { createElement, AddElementComposer, DeleteElement, UpdateElement } from "../properties_custom/utils.js";
 import { openLocalDiagram, saveDiagram, SaveSvg, saveDiagramToLocal, ResetDiagramLocal } from "../Utils/diagram_util.js";
 import Linter from "../LinterElement/index.js"
+import {toggleMode} from "../SimulationNeo/util.js"
+import WorkfloService  from "../service/WorkfloService.js"
 import { errors } from "../LinterElement/util.js"
-import SimulationSupportModule from 'bpmn-js-token-simulation/lib/simulation-support';
-import { toggleMode } from "../SimulationNeoledge/utils.js"
 export default {
   components: { custome_panel },
   setup() {
     const canvas = ref(null);
     const element = ref(null);
+    const _active = ref(true);
     const error = ref(errors);
     const propertiesVisible = ref(false);
     const fileInput = ref(null);
@@ -130,7 +129,7 @@ export default {
         additionalModules: [
           ColorsBpm,
           gridModule,
-          SimulationSupportModule,
+          TokenSimulationModule,
           CommentModule,
           transactionBoundariesModule,
           Linter
@@ -180,11 +179,22 @@ export default {
     };
 
     const ToggleSimulation = () => {
-      const eventBus = modeler.get('eventBus');
-      const canvas = modeler.get('canvas');
-      const selection = modeler.get('selection');
-      const contextPad = modeler.get('contextPad');
-      toggleMode(true,eventBus, canvas , selection, contextPad);
+      modeler.saveXML({ format: true }, function (err, updatedXml) {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        const blob = new Blob([updatedXml], { type: 'application/bpmn20-xml;charset=utf-8' });
+        WorkfloService.UploadFile(blob).then((res)=>{
+        const eventBus = modeler.get('eventBus');
+         const active = _active.value;
+        _active.value = !active;
+        const canvas = modeler.get('canvas');
+        const selection = modeler.get('selection');
+        const contextPad = modeler.get('contextPad');
+        toggleMode(active,eventBus,canvas,selection,contextPad);
+      })
+      });
     }
 
     const zoomOut = () => {
@@ -449,12 +459,13 @@ export default {
           container: canvas.value,
           keyboard: { bindTo: window },
           additionalModules: [
-            ColorsBpm,
-            gridModule,
-            SimulationSupportModule,
-            CommentModule,
-            transactionBoundariesModule,
-          ],
+          ColorsBpm,
+          gridModule,
+          TokenSimulationModule,
+          CommentModule,
+          transactionBoundariesModule,
+          Linter
+        ],
           moddleExtensions: { neo: NeoledgeDescriptor }
         });
 
@@ -678,3 +689,4 @@ export default {
   cursor: pointer;
 }
 </style>
+../SimulationNeoledge/toggleMode.js

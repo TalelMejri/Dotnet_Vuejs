@@ -48,9 +48,6 @@ export default function ToggleMode(
 
 ToggleMode.prototype._init = function () {
   this._container = domify(`
-    <div class="bts-toggle-mode">
-      Start Process  <span class="bts-toggle">${ToggleOffIcon()}</span>
-    </div>
   `);
 
   domEvent.bind(this._container, 'click', () => this.toggleMode());
@@ -71,13 +68,11 @@ ToggleMode.prototype.toggleMode = function (active = !this._active) {
       alert("There are errors in the process. Please fix them before starting the simulation.")
       return;
     } else {
-      this._container.innerHTML = `Start Process <span class="bts-toggle">${ToggleOnIcon()}</span>`;
       domClasses(this._canvasParent).add('simulation');
       domClasses(this._palette).add('hidden');
       btn.classList.add("hidden")
     }
   } else {
-   this._container.innerHTML = `Start Process <span class="bts-toggle">${ToggleOffIcon()}</span>`;
     domClasses(this._canvasParent).remove('simulation');
     domClasses(this._palette).remove('hidden');
     btn.classList.remove("hidden")

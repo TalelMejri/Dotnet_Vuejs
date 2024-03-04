@@ -4,7 +4,6 @@
    </div>
 </template>
 
-
 <script>
 import AOS from "aos";
 import 'animate.css';
