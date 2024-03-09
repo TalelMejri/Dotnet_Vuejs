@@ -151,8 +151,9 @@
                                                 <textarea
                                                     :class="error_code == '' && code_python !='' ? 'form-control' : 'form-control is-invalid'"
                                                     name="text" placeholder="Enter Your Code Here" v-model="code_python"
-                                                    @input="checkCode()"></textarea>
-                                                <small v-if="error_code != ''" class="text-danger">{{ error_code }}</small>
+                                                  ></textarea>
+                                                  <!-- @input="checkCode()" -->
+                                                <!-- <small v-if="error_code != ''" class="text-danger">{{ error_code }}</small> -->
                                             </div>
                                             <div class="d-flex gap-2 justify-content-center mb-2">
                                                 <button class="btn btn-primary" @click="AddCode()">Add</button>
@@ -528,9 +529,9 @@ export default {
             }
         },
         AddCode() {
-            if (this.checkCode(this.code_python)) {
+          //   if (this.checkCode(this.code_python)) {
                 this.$emit("AddCodePython", this.code_python);
-            }
+           // }
         },
         AddTimer(){
             this.$emit("AddTimer", this.Timer);

@@ -86,3 +86,32 @@ export function ResetDiagramLocal() {
   localStorage.removeItem("savedDiagram");
 }
 
+export function parseBPMNJson({ rootElements }) {
+  if (!Array.isArray(rootElements) || rootElements.length === 0) {
+    console.log("No root elements found.");
+    return;
+  }
+  const steps = rootElements
+    .filter(el => el.$type === "bpmn:Process")
+    .reduce((acc, curr) => acc.concat(curr.flowElements || []), [])
+  if (steps.length === 0) {
+    console.log("No flow elements found.");
+    return;
+  }
+  const mappedSteps = steps.map(el => {
+    const extensionElements = el.extensionElements?.values || [];
+    const combinedExtensionElements = extensionElements.reduce((acc, curr) => {
+      return { ...acc, ...curr };
+    }, {});
+      
+    return {
+      Type: el.$type,
+      Name: el.name,
+      Documentation: el.documentation ?? [],
+      Id: el.id,
+      EventDefinitions: el.eventDefinitions ? el.eventDefinitions[0].$type : null ,
+      ExtensionElements: [combinedExtensionElements]
+    };
+  });
+  return mappedSteps;
+}

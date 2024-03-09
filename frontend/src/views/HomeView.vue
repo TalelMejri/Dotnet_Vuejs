@@ -96,10 +96,10 @@ import ColorsBpm from "../colors/index";
 import transactionBoundariesModule from 'camunda-transaction-boundaries';
 import custome_panel from "@/components/custome_panel.vue";
 import { createElement, AddElementComposer, DeleteElement, UpdateElement } from "../properties_custom/utils.js";
-import { openLocalDiagram, saveDiagram, SaveSvg, saveDiagramToLocal, ResetDiagramLocal } from "../Utils/diagram_util.js";
+import { openLocalDiagram, saveDiagram, SaveSvg, saveDiagramToLocal, ResetDiagramLocal, parseBPMNJson } from "../Utils/diagram_util.js";
 import Linter from "../LinterElement/index.js"
-import {toggleMode} from "../SimulationNeo/util.js"
-import WorkfloService  from "../service/WorkfloService.js"
+import { toggleMode } from "../SimulationNeo/util.js"
+import WorkfloService from "../service/WorkfloService.js"
 import { errors } from "../LinterElement/util.js"
 export default {
   components: { custome_panel },
@@ -185,15 +185,20 @@ export default {
           return;
         }
         const blob = new Blob([updatedXml], { type: 'application/bpmn20-xml;charset=utf-8' });
-        WorkfloService.UploadFile(blob).then((res)=>{
-        const eventBus = modeler.get('eventBus');
-         const active = _active.value;
-        _active.value = !active;
-        const canvas = modeler.get('canvas');
-        const selection = modeler.get('selection');
-        const contextPad = modeler.get('contextPad');
-        toggleMode(active,eventBus,canvas,selection,contextPad);
-      })
+        var definitions = modeler.get("canvas").getRootElement().businessObject.$parent;
+        WorkfloService.UploadFile(blob, parseBPMNJson(definitions)).then((res) => {
+          for(let i=0;i<(res.data).length;i++){
+            const elementNew = bpmnElementRegistry.get(res.data[i]);
+            modeler.get('modeling').updateProperties(elementNew, { status: 1});
+          }
+          const eventBus = modeler.get('eventBus');
+          const active = _active.value;
+          _active.value = !active;
+          const canvas = modeler.get('canvas');
+          const selection = modeler.get('selection');
+          const contextPad = modeler.get('contextPad');
+          toggleMode(active, eventBus, canvas, selection, contextPad);
+        })
       });
     }
 
@@ -459,13 +464,13 @@ export default {
           container: canvas.value,
           keyboard: { bindTo: window },
           additionalModules: [
-          ColorsBpm,
-          gridModule,
-          TokenSimulationModule,
-          CommentModule,
-          transactionBoundariesModule,
-          Linter
-        ],
+            ColorsBpm,
+            gridModule,
+            TokenSimulationModule,
+            CommentModule,
+            transactionBoundariesModule,
+            Linter
+          ],
           moddleExtensions: { neo: NeoledgeDescriptor }
         });
 

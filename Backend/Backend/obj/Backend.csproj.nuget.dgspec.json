@@ -44,6 +44,10 @@
               "target": "Package",
               "version": "[3.0.4, )"
             },
+            "Elsa.Activities.ControlFlow": {
+              "target": "Package",
+              "version": "[1.5.5.1943, )"
+            },
             "Elsa.EntityFrameworkCore.Sqlite": {
               "target": "Package",
               "version": "[3.0.4, )"
@@ -56,9 +60,39 @@
               "target": "Package",
               "version": "[3.0.4, )"
             },
+            "Elsa.Scheduling": {
+              "target": "Package",
+              "version": "[3.0.6, )"
+            },
             "Elsa.Workflows.Api": {
               "target": "Package",
               "version": "[3.0.4, )"
+            },
+            "IronPython": {
+              "target": "Package",
+              "version": "[3.4.1, )"
+            },
+            "IronPython.StdLib": {
+              "target": "Package",
+              "version": "[3.4.1, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[7.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.8, )"
+            },
+            "Python.Runtime": {
+              "target": "Package",
+              "version": "[2.7.9, )"
+            },
+            "pythonnet": {
+              "target": "Package",
+              "version": "[3.1.0-preview2024-03-03, )"
             }
           },
           "imports": [

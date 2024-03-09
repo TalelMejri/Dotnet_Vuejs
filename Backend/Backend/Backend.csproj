@@ -6,14 +6,26 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
     <OutputType>Exe</OutputType>
+	<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Elsa" Version="3.0.4" />
+    <PackageReference Include="Elsa.Activities.ControlFlow" Version="1.5.5.1943" />
     <PackageReference Include="Elsa.EntityFrameworkCore.Sqlite" Version="3.0.4" />
     <PackageReference Include="Elsa.Identity" Version="3.0.4" />
     <PackageReference Include="Elsa.Liquid" Version="3.0.4" />
+    <PackageReference Include="Elsa.Scheduling" Version="3.0.6" />
     <PackageReference Include="Elsa.Workflows.Api" Version="3.0.4" />
+    <PackageReference Include="IronPython" Version="3.4.1" />
+    <PackageReference Include="IronPython.StdLib" Version="3.4.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Python.Runtime" Version="2.7.9" />
+    <PackageReference Include="pythonnet" Version="3.1.0-preview2024-03-03" />
   </ItemGroup>
 
 </Project>
