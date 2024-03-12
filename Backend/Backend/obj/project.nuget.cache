@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "qLMBB+9SjO9zYgzi/5EkBJVqAuGBw3eMgpYuVUvi5RoqwTcJGDxqBJgO7Ds2hv0F9N8GZn1a2c1j9rfH5zpAxA==",
+  "dgSpecHash": "UimE7CL6bSnDQ0KnUrP9n/clEovqeE60WxGOotOX7MO4323H9S0EJjhTl5ADZDCYsAudIjRI3RYWJqxU+qq1+Q==",
   "success": true,
   "projectFilePath": "C:\\Users\\talel\\Desktop\\Dotnet_Vuejs\\Backend\\Backend\\Backend.csproj",
   "expectedPackageFiles": [
@@ -142,7 +142,7 @@
     "C:\\Users\\talel\\.nuget\\packages\\open.linq.asyncextensions\\1.2.0\\open.linq.asyncextensions.1.2.0.nupkg.sha512",
     "C:\\Users\\talel\\.nuget\\packages\\parlot\\0.0.24\\parlot.0.0.24.nupkg.sha512",
     "C:\\Users\\talel\\.nuget\\packages\\python.runtime\\2.7.9\\python.runtime.2.7.9.nupkg.sha512",
-    "C:\\Users\\talel\\.nuget\\packages\\pythonnet\\3.1.0-preview2024-03-03\\pythonnet.3.1.0-preview2024-03-03.nupkg.sha512",
+    "C:\\Users\\talel\\.nuget\\packages\\pythonnet\\3.0.3\\pythonnet.3.0.3.nupkg.sha512",
     "C:\\Users\\talel\\.nuget\\packages\\runtime.native.system.data.sqlclient.sni\\4.6.0\\runtime.native.system.data.sqlclient.sni.4.6.0.nupkg.sha512",
     "C:\\Users\\talel\\.nuget\\packages\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "C:\\Users\\talel\\.nuget\\packages\\runtime.win-x64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",

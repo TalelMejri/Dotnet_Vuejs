@@ -20,7 +20,7 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.8",
           "Microsoft.EntityFrameworkCore.Tools": "7.0.8",
           "Python.Runtime": "2.7.9",
-          "pythonnet": "3.1.0-preview2024-03-03"
+          "pythonnet": "3.0.3"
         },
         "runtime": {
           "Backend.dll": {}
@@ -1688,15 +1688,15 @@
         }
       },
       "Python.Runtime/2.7.9": {},
-      "pythonnet/3.1.0-preview2024-03-03": {
+      "pythonnet/3.0.3": {
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",
           "System.Reflection.Emit": "4.7.0"
         },
         "runtime": {
           "lib/netstandard2.0/Python.Runtime.dll": {
-            "assemblyVersion": "3.1.0.0",
-            "fileVersion": "3.1.0.0"
+            "assemblyVersion": "3.0.3.0",
+            "fileVersion": "3.0.3.0"
           }
         }
       },
@@ -3230,12 +3230,12 @@
       "path": "python.runtime/2.7.9",
       "hashPath": "python.runtime.2.7.9.nupkg.sha512"
     },
-    "pythonnet/3.1.0-preview2024-03-03": {
+    "pythonnet/3.0.3": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-xxrcFq4yuRmX3YvRsFb8u19wIUD9GGORJMoQkKXGh0+m+b8pi2IevHnldMyCA8EiW4zEsHD+pHppUv85RKTI0g==",
-      "path": "pythonnet/3.1.0-preview2024-03-03",
-      "hashPath": "pythonnet.3.1.0-preview2024-03-03.nupkg.sha512"
+      "sha512": "sha512-Go6pLzJ0msUVISUDf4n49GFja/7PbrjfQ9Nxpz+KV0r39YB8x5lPz7sItX38a0KGLoQIsSMxkUNDRjGRvplLHw==",
+      "path": "pythonnet/3.0.3",
+      "hashPath": "pythonnet.3.0.3.nupkg.sha512"
     },
     "runtime.native.System.Data.SqlClient.sni/4.6.0": {
       "type": "package",

@@ -6352,7 +6352,7 @@
       "Python.Runtime/2.7.9": {
         "type": "package"
       },
-      "pythonnet/3.1.0-preview2024-03-03": {
+      "pythonnet/3.0.3": {
         "type": "package",
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",
@@ -11601,10 +11601,10 @@
         "python.runtime.nuspec"
       ]
     },
-    "pythonnet/3.1.0-preview2024-03-03": {
-      "sha512": "xxrcFq4yuRmX3YvRsFb8u19wIUD9GGORJMoQkKXGh0+m+b8pi2IevHnldMyCA8EiW4zEsHD+pHppUv85RKTI0g==",
+    "pythonnet/3.0.3": {
+      "sha512": "Go6pLzJ0msUVISUDf4n49GFja/7PbrjfQ9Nxpz+KV0r39YB8x5lPz7sItX38a0KGLoQIsSMxkUNDRjGRvplLHw==",
       "type": "package",
-      "path": "pythonnet/3.1.0-preview2024-03-03",
+      "path": "pythonnet/3.0.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -11613,7 +11613,7 @@
         "lib/netstandard2.0/Python.Runtime.dll",
         "lib/netstandard2.0/Python.Runtime.xml",
         "python-clear.png",
-        "pythonnet.3.1.0-preview2024-03-03.nupkg.sha512",
+        "pythonnet.3.0.3.nupkg.sha512",
         "pythonnet.nuspec"
       ]
     },
@@ -13558,7 +13558,7 @@
       "Microsoft.EntityFrameworkCore.SqlServer >= 7.0.8",
       "Microsoft.EntityFrameworkCore.Tools >= 7.0.8",
       "Python.Runtime >= 2.7.9",
-      "pythonnet >= 3.1.0-preview2024-03-03"
+      "pythonnet >= 3.0.3"
     ]
   },
   "packageFolders": {
@@ -13652,7 +13652,7 @@
           },
           "pythonnet": {
             "target": "Package",
-            "version": "[3.1.0-preview2024-03-03, )"
+            "version": "[3.0.3, )"
           }
         },
         "imports": [
