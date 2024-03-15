@@ -27,16 +27,14 @@ namespace Backend.Models
     {
         public string Time { get; set; }
         public string Code { get; set; }
-
         [JsonProperty("type")]
         public string TypeDef { get; set; }
-
         public string Retries { get; set; }
-
         public List<Value> Values { get; set; }
         public List<Input> InputParameters { get; set; }
         public List<Output> OutputParameters { get; set; }
         public List<Property> Properties { get; set; }
+        public List<CommentProp> Comments { get; set; }
     }
 
     public class Value
@@ -44,19 +42,21 @@ namespace Backend.Models
         public string Key { get; set; }
         public string Values { get; set; }
     }
-
+    public class CommentProp
+    {
+        public string IdUser { get; set; }
+        public string Comment { get; set; }
+    }
     public class Input
     {
         public string Source { get; set; }
         public string Target { get; set; }
     }
-
     public class Output
     {
         public string Source { get; set; }
         public string Target { get; set; }
     }
-
     public class Property
     {
         public string Name { get; set; }

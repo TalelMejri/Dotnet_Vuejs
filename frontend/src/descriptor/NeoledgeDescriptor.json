@@ -513,6 +513,9 @@
     },
     {
       "name": "CommentTask",
+      "superClass": [
+        "Element"
+      ],
       "properties": [
         {
           "name": "comments",

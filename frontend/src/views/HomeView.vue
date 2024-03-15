@@ -12,7 +12,7 @@
           <div id="canvas" ref="canvas" class="canvas"></div>
           <custome_panel v-if="element" @UpdateValue="UpdateValue" @AddTimer="AddTimer"
             @updatePropertyHeader="updatePropertyHeader" @SetHeaders="SetHeaders" @DeleteOutput="DeleteOutput"
-            @AddCodePython="AddCodePython" @AddOutputs="AddOutputs" @UpdatePropertyInput="UpdatePropertyInput"
+            @AddCodePython="AddCodePython" @AddOutputs="AddOutputs" @deleteComment="deleteComment" @SetComments="SetComments" @UpdatePropertyInput="UpdatePropertyInput"
             @UpdatePropertyOutput="UpdatePropertyOutput" @DeleteInput="DeleteInput" @AddInputs="AddInputs"
             :element="element" @setValue="setValue" @updateActivityName="updateActivityName" @addFn="addFn"
             @updateProperties="updateProperties" @deleteHeader="deleteHeader" class="properties">
@@ -262,15 +262,19 @@ export default {
         "key",
         key,
         value);
-        // AddElementComposer(
-        // element,
-        // bpmnElementfactory,
-        // "neo:CommentTask",
-        // "neo:Comment",
-        // "comments",
-        // "IdUser",
-        // key,
-        // value);
+      
+    }
+
+    const SetComments = (comment,idUser) => {
+       AddElementComposer(
+        element,
+        bpmnElementfactory,
+        "neo:CommentTask",
+        "neo:Comment",
+        "comments",
+        "IdUser",
+        idUser,
+        comment);
     }
 
     const AddOutputs = (name, value) => {
@@ -362,6 +366,19 @@ export default {
         properties,
         'neo:Input',
         "source"
+      );
+    }
+
+
+    const deleteComment = (properties) => {
+      DeleteElement(
+        element,
+        'neo:CommentTask',
+        bpmnElementfactory,
+        "comments",
+        properties,
+        'neo:Comment',
+        "IdUser"
       );
     }
 
@@ -529,6 +546,7 @@ export default {
       test,
       addFn,
       AddOutputs,
+      SetComments,
       DeleteOutput,
       setValue,
       UpdateValue,
@@ -544,6 +562,7 @@ export default {
       resetDiagram,
       UpdatePropertyOutput,
       updatePropertyHeader,
+      deleteComment,
       importDiagram,
       keyboardShortcutsVisible,
       toggleKeyboardShortcutsVisibility,
@@ -711,4 +730,3 @@ export default {
   cursor: pointer;
 }
 </style>
-../SimulationNeoledge/toggleMode.js

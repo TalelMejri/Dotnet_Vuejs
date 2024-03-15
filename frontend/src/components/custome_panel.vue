@@ -11,18 +11,18 @@
         </div>
         <div class="body mt-2" v-if="element != ''">
             <div v-if="selected == 'comment'" class="comment-section">
-                <div v-if="AllComments != ''">
-                    <div v-for="comment in AllComments">
+                <div v-if="Comments != ''">
+                    <div v-for="(CommentValue,index) in Comments">
                         <div class="comment-header">
-                            <span class="comment-user">Talel Mejri</span>
-                            <span class="comment-date">12/05/02</span>
+                            <span class="comment-user">{{ CommentValue.IdUser }}</span>
+                            <!-- <span class="comment-date">12/05/02</span> -->
                         </div>
                         <div class="d-flex justify-content-between align-items-center comment-text">
                             <div class="p-2">
-                                {{ comment[1] }}
+                                {{ CommentValue.comment }}
                             </div>
                             <div>
-                                <button @click="deleteComment(comment)" class="btn btn-danger">Delete</button>
+                                <button @click="deleteComment(index)" class="btn btn-danger">Delete</button>
                             </div>
                         </div>
                     </div>
@@ -307,6 +307,7 @@ export default {
                 this.getAllHeaders();
                 this.getAllInputs();
                 this.getAllOutputs();
+                this.getComments();
             }
         },
         getAllComments() {
@@ -404,12 +405,30 @@ export default {
                 }
             }
         },
+        getComments() {
+            this.Comments = [];
+            if (this.element[3]['extensionElements'] != undefined) {
+                if (this.element[3]['extensionElements']['values'] != undefined) {
+                    let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:CommentTask'));
+                    if (test) {
+                        let tab = test['comments'];
+                        if (tab) {
+                            tab.forEach((val) => {
+                                this.Comments.push({ IdUser: val.IdUser, comment: val.comment })
+                            })
+                        }
+                    }
+                }
+            }
+        },
         addComments() {
-            addComment(this.element, '', this.commentInput);
+            this.$emit("SetComments",this.commentInput,2);
+            //addComment(this.element, '', this.commentInput);
             this.InitMethods();
         },
-        deleteComment(val2) {
-            removeComment(this.element, val2);
+        deleteComment(index) {
+            this.Comments.splice(index, 1);
+            this.$emit('deleteComment', this.Comments);
             this.InitMethods();
         },
         getAllProperties() {
@@ -562,6 +581,7 @@ export default {
             showInputEdit: false,
             variable_fx: "",
             AllOutputs: [],
+            Comments:[],
             localNameOutPut: "",
             variable_fxOutput: "",
             showOutPutEdit: "",

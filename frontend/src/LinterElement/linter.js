@@ -18,7 +18,7 @@ import { addError, removeError,getErrorById } from "./util"
 import { ELEMENT_CHANGED_EVENT, PLAY_SIMULATION_EVENT } from '@/bpmn-js-token-simulation/lib/util/EventHelper';
 
 export default function Linter(eventBus, overlays,popupMenu,contextPad,canvas) {
-  popupMenu.registerProvider('comment', this);
+  
   function createIcon(element) {
     var $overlay = $(colorImageSvg);
     $overlay.click(function (e) {
@@ -97,45 +97,6 @@ export default function Linter(eventBus, overlays,popupMenu,contextPad,canvas) {
   });
 }
 
-
-Linter.prototype.getEntries = function(elements) {
-  var self = this;
-
-  var colorIconHtml = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" height="100%" width="100%">
-      <rect rx="2" x="1" y="1" width="22" height="22" fill="var(--fill-color)" stroke="var(--stroke-color)" style="stroke-width:2"></rect>
-    </svg>
-  `;
-
-
-    return {
-      title: "",
-      id:"color.label.toLowerCase()" + '-color',
-    };
-    
-
-};
-
-function getStartPosition(canvas, contextPad, elements) {
-
-  var Y_OFFSET = 5;
-
-  var diagramContainer = canvas.getContainer(),
-      pad = contextPad.getPad(elements).html;
-
-  var diagramRect = diagramContainer.getBoundingClientRect(),
-      padRect = pad.getBoundingClientRect();
-
-  var top = padRect.top - diagramRect.top;
-  var left = padRect.left - diagramRect.left;
-
-  var pos = {
-    x: left,
-    y: top + padRect.height + Y_OFFSET
-  };
-
-  return pos;
-}
 function defer(fn) {
   setTimeout(fn, 0);
 }

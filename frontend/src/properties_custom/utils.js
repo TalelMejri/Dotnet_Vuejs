@@ -75,6 +75,8 @@ export function DeleteElement(
         baseElement.inputParameters = [];
     }else if(valueChild == "outputParameters"){
         baseElement.outputParameters = [];
+    }else{
+        baseElement.comments = [];
     }
 
     if (!extensionElements) {
@@ -101,10 +103,17 @@ export function DeleteElement(
                 }, bpmnFactory);
                 baseElement.get(valueChild).push(baseElementValue);
             }
-        } else {
+        } else if(typeName=="source") {
             for (let i = 0; i < properties.length; i++) {
                 var baseElementValue = createElement(TypeChildOfChild, {
                     source: properties[i].name, target: properties[i].value
+                }, bpmnFactory);
+                baseElement.get(valueChild).push(baseElementValue);
+            }
+        }else{
+            for (let i = 0; i < properties.length; i++) {
+                var baseElementValue = createElement(TypeChildOfChild, {
+                    IdUser: properties[i].IdUser, comment: properties[i].comment
                 }, bpmnFactory);
                 baseElement.get(valueChild).push(baseElementValue);
             }
