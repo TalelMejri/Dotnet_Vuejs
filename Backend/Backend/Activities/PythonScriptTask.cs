@@ -21,19 +21,20 @@ namespace Backend.Activities
         public void TestPython()
         {
            Runtime.PythonDLL = @"C:\Users\talel\AppData\Local\Programs\Python\Python312\Python312.dll";
+          
            PythonEngine.Initialize();
-           PythonEngine.BeginAllowThreads();
-
-            using (Py.GIL())
-            {
+           PythonEngine.BeginAllowThreads(); 
+          
+           using (Py.GIL())
+           {
                 PythonEngine.RunSimpleString(Script);
-            }
-          PythonEngine.Shutdown();
-
+           }
+           PythonEngine.Shutdown();
+          
         }
         protected override void Execute(ActivityExecutionContext context)
         {
-          
+         
         }
     }
 }

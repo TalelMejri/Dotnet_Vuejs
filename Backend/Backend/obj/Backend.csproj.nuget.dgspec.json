@@ -60,6 +60,10 @@
               "target": "Package",
               "version": "[3.0.4, )"
             },
+            "Elsa.Quartz": {
+              "target": "Package",
+              "version": "[3.0.6, )"
+            },
             "Elsa.Scheduling": {
               "target": "Package",
               "version": "[3.0.6, )"

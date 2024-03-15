@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
     <OutputType>Exe</OutputType>
-	  <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+	<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +15,7 @@
     <PackageReference Include="Elsa.EntityFrameworkCore.Sqlite" Version="3.0.4" />
     <PackageReference Include="Elsa.Identity" Version="3.0.4" />
     <PackageReference Include="Elsa.Liquid" Version="3.0.4" />
+    <PackageReference Include="Elsa.Quartz" Version="3.0.6" />
     <PackageReference Include="Elsa.Scheduling" Version="3.0.6" />
     <PackageReference Include="Elsa.Workflows.Api" Version="3.0.4" />
     <PackageReference Include="IronPython" Version="3.4.1" />

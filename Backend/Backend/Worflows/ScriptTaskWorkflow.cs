@@ -3,9 +3,11 @@ using Elsa.Http;
 using Elsa.Workflows;
 using Elsa.Workflows.Activities;
 using Elsa.Workflows.Contracts;
+using JetBrains.Annotations;
 
 namespace Backend.Worflows
 {
+    [PublicAPI]
     public class ScriptTaskWorkflow : WorkflowBase
     {
         private readonly string _data;
@@ -22,10 +24,6 @@ namespace Backend.Worflows
             {
                 Activities =
             {
-                new HttpEndpoint
-                {
-                    CanStartWorkflow = true,
-                },
                 new PythonScriptTask(code),
                 new WriteHttpResponse
                 {

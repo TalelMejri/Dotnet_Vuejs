@@ -46,6 +46,7 @@ export function saveDiagram(modeler) {
     if (err) {
       console.log('Error saving XML', err);
     } else {
+     
       const blob = new Blob([xml], { type: 'application/bpmn20-xml;charset=utf-8' });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');

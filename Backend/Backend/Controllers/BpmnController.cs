@@ -5,16 +5,17 @@ using Backend.Worflows;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Elsa.Workflows.Contracts;
-
+using Timer = Elsa.Scheduling.Activities.Timer;
 namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BpmnController : Controller
+    public class BpmnController : ControllerBase
     {
         private System.Threading.Timer timer;
         FileService _fileService = new FileService();
-
+        private DateTime _lastExecutionTime = DateTime.MinValue;
+        private System.Timers.Timer _timer;
         private readonly IWorkflowRunner _workflowRunner;
 
         public BpmnController(IWorkflowRunner workflowRunner)
@@ -25,21 +26,69 @@ namespace Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadBpmn([FromForm] IFormFile file, [FromForm] string data)
         {
+            var list = new List<String>();
 
-            var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "fileBpmn");
-            if (!Directory.Exists(directoryPath))
-                Directory.CreateDirectory(directoryPath);
-
-            var randomFileName = Guid.NewGuid().ToString() + ".bpmn";
-            var filePath = Path.Combine(directoryPath, randomFileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            await _fileService.SaveFileName(randomFileName);
             var elements = JsonConvert.DeserializeObject<List<ElementType>>(data);
+            var replay = 0;
+            foreach (ElementType element in elements)
+            {
+                if (element.ExtensionElements != null)
+                {
+                    if (element.ExtensionElements.Any(ev => ev.Time != null))
+                    {
+                        var extensionValue = element.ExtensionElements.FirstOrDefault(ev => ev.Time != null);
+                        if (int.TryParse(extensionValue.Time, out int replayMinutes))
+                        {
+                            replay = replayMinutes;
+                        }
+                        else
+                        {
+                            replay = 0;
+                        }
+                    }
+                }
+            }
+         
+                var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "fileBpmn");
+                if (!Directory.Exists(directoryPath))
+                    Directory.CreateDirectory(directoryPath);
+
+                var randomFileName = Guid.NewGuid().ToString() + ".bpmn";
+                var filePath = Path.Combine(directoryPath, randomFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                await _fileService.SaveFileName(randomFileName);
+                var workflow = await BmnWorkflow(data);
+            /*
+               var currentTime = DateTime.UtcNow;
+               var nextMidnight = currentTime.Date.AddDays(1); 
+               var delay = nextMidnight - currentTime;
+            */
+           /*
+              var currentTime = DateTime.UtcNow;
+              var nextTargetTime = currentTime.Date.AddHours(23).AddMinutes(53);
+              if (currentTime > nextTargetTime)
+              {
+                 nextTargetTime = nextTargetTime.AddDays(1);
+              }
+              var delay = nextTargetTime - currentTime;
+              _timer = new System.Timers.Timer(delay.TotalMilliseconds);
+            */
+                _timer = new System.Timers.Timer(TimeSpan.FromMinutes(replay).TotalMilliseconds);
+                _timer.Elapsed += async (sender, e) =>
+                {
+                     workflow=await BmnWorkflow(data);
+                };
+                _timer.AutoReset = true; // to make it executed many time
+                _timer.Start();
+                //_timer.Stop();
+                return Ok(workflow);
+ 
+            /*var elements = JsonConvert.DeserializeObject<List<ElementType>>(data);
            
              var replay = 0;
           foreach (ElementType element in elements)
@@ -59,13 +108,12 @@ namespace Backend.Controllers
                          }
                    }
                  }
-             }
-             var workflow = await BmnWorkflow(data);
-            return Ok(workflow);
+             }*/
+
         }
 
         private async Task<List<String>> BmnWorkflow(string data)
-        {
+        { 
             var elements = JsonConvert.DeserializeObject<List<ElementType>>(data);
             var list = new List<String>();
 
@@ -81,12 +129,13 @@ namespace Backend.Controllers
                           if (scriptValue != null)
                           {
                               var code = scriptValue.Code;
+                              await Task.Delay(TimeSpan.FromSeconds(2));
                               await _workflowRunner.RunAsync(new ScriptTaskWorkflow(code));
-                            list.Add(element.Id);
+                             // list.Add(element.Id);
                            }
                         break;
                     case "bpmn:SendTask":
-                        list.Add(element.Id);
+                        //list.Add(element.Id);
                         break;
                     default:
                         break;

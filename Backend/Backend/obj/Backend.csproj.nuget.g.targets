@@ -3,8 +3,8 @@
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <Import Project="$(NuGetPackageRoot)system.text.json\7.0.4\buildTransitive\net6.0\System.Text.Json.targets" Condition="Exists('$(NuGetPackageRoot)system.text.json\7.0.4\buildTransitive\net6.0\System.Text.Json.targets')" />
     <Import Project="$(NuGetPackageRoot)sqlitepclraw.lib.e_sqlite3\2.1.4\buildTransitive\net6.0\SQLitePCLRaw.lib.e_sqlite3.targets" Condition="Exists('$(NuGetPackageRoot)sqlitepclraw.lib.e_sqlite3\2.1.4\buildTransitive\net6.0\SQLitePCLRaw.lib.e_sqlite3.targets')" />
-    <Import Project="$(NuGetPackageRoot)mono.unix\7.1.0-final.1.21458.1\build\Mono.Unix.targets" Condition="Exists('$(NuGetPackageRoot)mono.unix\7.1.0-final.1.21458.1\build\Mono.Unix.targets')" />
     <Import Project="$(NuGetPackageRoot)microsoft.extensions.logging.abstractions\7.0.1\buildTransitive\net6.0\Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.extensions.logging.abstractions\7.0.1\buildTransitive\net6.0\Microsoft.Extensions.Logging.Abstractions.targets')" />
+    <Import Project="$(NuGetPackageRoot)mono.unix\7.1.0-final.1.21458.1\build\Mono.Unix.targets" Condition="Exists('$(NuGetPackageRoot)mono.unix\7.1.0-final.1.21458.1\build\Mono.Unix.targets')" />
     <Import Project="$(NuGetPackageRoot)entityframework\6.3.0\buildTransitive\EntityFramework.targets" Condition="Exists('$(NuGetPackageRoot)entityframework\6.3.0\buildTransitive\EntityFramework.targets')" />
   </ImportGroup>
 </Project>

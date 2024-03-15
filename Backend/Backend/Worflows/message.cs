@@ -5,7 +5,7 @@ using Elsa.Workflows.Contracts;
 
 namespace Backend.Worflows
 {
-    public class message : WorkflowBase
+    /*public class message : WorkflowBase
     {
         protected override void Build(IWorkflowBuilder builder)
         {
@@ -39,5 +39,5 @@ namespace Backend.Worflows
             }
             };
         }
-    }
+    }*/
 }

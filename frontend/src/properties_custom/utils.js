@@ -39,10 +39,14 @@ export function AddElementComposer(
         var ChildItemValue = createElement(TypeChildOfChild, {
             name: name, value: value
         }, bpmnFactory);
-    } else {
+    } else if(typeName=="source") {
         var ChildItemValue = createElement(TypeChildOfChild, {
             source: name, target: value
         }, bpmnFactory);
+    }else{
+        var ChildItemValue = createElement(TypeChildOfChild, {
+            IdUser: name, comment: value
+        }, bpmnFactory); 
     }
 
     ChildItem.get(ValuesChild).push(ChildItemValue);

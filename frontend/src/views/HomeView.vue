@@ -179,6 +179,13 @@ export default {
     };
 
     const ToggleSimulation = () => {
+      if (errors.length > 0) {
+        
+      console.log(errors);
+      alert("There are errors in the process. Please fix them before starting the simulation.")
+      return;
+    } else {
+      
       modeler.saveXML({ format: true }, function (err, updatedXml) {
         if (err) {
           console.error(err);
@@ -200,6 +207,7 @@ export default {
           toggleMode(active, eventBus, canvas, selection, contextPad);
         })
       });
+      }
     }
 
     const zoomOut = () => {
@@ -254,6 +262,15 @@ export default {
         "key",
         key,
         value);
+        // AddElementComposer(
+        // element,
+        // bpmnElementfactory,
+        // "neo:CommentTask",
+        // "neo:Comment",
+        // "comments",
+        // "IdUser",
+        // key,
+        // value);
     }
 
     const AddOutputs = (name, value) => {

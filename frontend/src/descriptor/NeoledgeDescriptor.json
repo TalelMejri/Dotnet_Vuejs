@@ -510,6 +510,31 @@
           "isAttr": true
         }
       ]
+    },
+    {
+      "name": "CommentTask",
+      "properties": [
+        {
+          "name": "comments",
+          "type": "Comment",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "Comment",
+      "properties": [
+        {
+          "name": "IdUser",
+          "type": "String",
+          "isAttr": true
+        },
+        {
+          "name": "comment",
+          "type": "text",
+          "isAttr": true
+        }
+      ]
     }
   ]
 }

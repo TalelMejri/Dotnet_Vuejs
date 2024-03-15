@@ -8,7 +8,7 @@ using Backend.Activities;
 
 namespace Backend.Worflows
 {
-    public class Sum : WorkflowBase
+ /*   public class Sum : WorkflowBase
     {
         protected override void Build(IWorkflowBuilder builder)
         {
@@ -69,7 +69,7 @@ namespace Backend.Worflows
                }
             };
         }
-    }
+    }*/
 }
 
 

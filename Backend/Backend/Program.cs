@@ -3,11 +3,13 @@ using Elsa.EntityFrameworkCore.Modules.Management;
 using Elsa.EntityFrameworkCore.Modules.Runtime;
 using Elsa.Extensions;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 // Add Elsa services.
+
 builder.Services.AddElsa(elsa =>
 {
 
@@ -17,23 +19,42 @@ builder.Services.AddElsa(elsa =>
     {
         runtime.UseEntityFrameworkCore();
     });
-
+    
     elsa.UseIdentity(identity =>
     {
-        identity.TokenOptions = options =>
-        {
-            options.SigningKey = "c7dc81876a782d502084763fa322429fca015941eac90ce8ca7ad95fc8752035";
-            options.AccessTokenLifetime = TimeSpan.FromDays(1);
-        };
-
         identity.UseAdminUserProvider();
+        identity.TokenOptions = tokenOptions => tokenOptions.SigningKey = "my-long-256-bit-secret-token-signing-key";
     });
-
-    elsa.UseWorkflowsApi();
-    elsa.UseDefaultAuthentication(auth => auth.UseAdminApiKey());
     elsa.UseJavaScript();
+    elsa.UseLiquid();
+    elsa.UseWorkflows(workflows =>
+    {
+        // Configure workflow execution pipeline to handle workflow contexts.
+        workflows.WithWorkflowExecutionPipeline(pipeline => pipeline
+            .Reset()
+            .UsePersistentVariables()
+            .UseBookmarkPersistence()
+            .UseWorkflowExecutionLogPersistence()
+            .UseWorkflowExecutionLogPersistence()
+            .UseActivityExecutionLogPersistence()
+        );
+
+        // Configure activity execution pipeline to handle workflow contexts.
+        workflows.WithActivityExecutionPipeline(pipeline => pipeline
+            .Reset()
+            .UseBackgroundActivityInvoker()
+        );
+    });
+    elsa.UseQuartz();
+    elsa.UseScheduling(scheduling => scheduling.UseQuartzScheduler());
+    elsa.UseWorkflowsApi(api => api.AddFastEndpointsAssembly<Program>());
+    elsa.AddActivitiesFrom<Program>();
+    elsa.UseHttp();
+    elsa.UseDefaultAuthentication(auth => auth.UseAdminApiKey());
     elsa.UseRealTimeWorkflows();
 });
+
+
 
 builder.Services.AddCors(options =>
 {
@@ -48,7 +69,6 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 builder.Services.AddControllersWithViews();
 
-AppContext.SetSwitch("Switch.System.Runtime.Serialization.UseClassicSerializer", true);
 
 if (!app.Environment.IsDevelopment())
 {
