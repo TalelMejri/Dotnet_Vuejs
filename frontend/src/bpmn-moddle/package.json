@@ -1,0 +1,48 @@
+{
+  "name": "bpmn-moddle",
+  "version": "5.2.0",
+  "description": "A moddle wrapper for BPMN 2.0",
+  "scripts": {
+    "all": "run-s lint test",
+    "lint": "eslint .",
+    "dev": "npm test -- --watch",
+    "test": "mocha -r esm --reporter=spec --recursive test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bpmn-io/bpmn-moddle"
+  },
+  "keywords": [
+    "bpmn",
+    "moddle",
+    "bpmn20",
+    "meta-model"
+  ],
+  "author": {
+    "name": "Nico Rehwaldt",
+    "url": "https://github.com/nikku"
+  },
+  "contributors": [
+    {
+      "name": "bpmn.io contributors",
+      "url": "https://github.com/bpmn-io"
+    }
+  ],
+  "license": "MIT",
+  "sideEffects": false,
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "cmof-parser": "^0.2.0",
+    "eslint": "^4.11.0",
+    "eslint-plugin-bpmn-io": "^0.4.1",
+    "esm": "^3.0.15",
+    "mocha": "^4.0.1",
+    "npm-run-all": "^4.1.5",
+    "xsd-schema-validator": "^0.5.0"
+  },
+  "dependencies": {
+    "min-dash": "^3.0.0",
+    "moddle": "^4.1.0",
+    "moddle-xml": "^7.5.0"
+  }
+}

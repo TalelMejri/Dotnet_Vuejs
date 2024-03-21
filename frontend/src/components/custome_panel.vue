@@ -99,6 +99,23 @@
                             </div>
                         </div>
 
+
+                        <div class="accordion-item" v-if="element[3]['eventDefinitions']!=undefined && element[3]['eventDefinitions'][0]['$type'].split(':')[1]=='FileInput'">
+                            <h2 class="accordion-header" id="headingPath">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#taskPath" aria-expanded="false" aria-controls="taskPath">
+                                        PathFile
+                                </button>
+                            </h2>
+                            <div id="taskPath" class="accordion-collapse collapse " aria-labelledby="headingPath"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <input :class="path!='' ? 'form-control mb-2' :'form-control mb-2 is-invalid'" v-model="path" type="text" placeholder="path" />
+                                    <button @click="AddPath()">Add Path</button>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="accordion-item" v-if="element[2].split(':')[1] === 'SendTask'">
                             <h2 class="accordion-header" id="headingHeaders">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -283,12 +300,6 @@
 <script>
 
 import { toRaw } from 'vue';
-import {
-    getComments,
-    removeComment,
-    addComment
-} from '../comment_custom_copie/util.js';
-
 export default {
     props: {
         element: Array
@@ -307,23 +318,7 @@ export default {
                 this.getAllHeaders();
                 this.getAllInputs();
                 this.getAllOutputs();
-                this.getComments();
-            }
-        },
-        getAllComments() {
-            this.AllComments = [];
-            this.commentInput = "";
-            this.AllComments = getComments(this.element);
-            if (this.element[3]['extensionElements'] != undefined) {
-                if (this.element[3]['extensionElements']['values'] != undefined) {
-                    let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:Properties'));
-                    if (test) {
-                        let tab = test['properties'];
-                        tab.forEach((val) => {
-                            this.AllProperties.push({ name: val.name, value: val.value })
-                        })
-                    }
-                }
+                this.getPath();
             }
         },
         getAllHeaders() {
@@ -362,6 +357,16 @@ export default {
                     let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:PythonCode'));
                     if (test) {
                         this.code_python = test['code']
+                    }
+                }
+            }
+        },
+        getPath(){
+            if (this.element[3]['extensionElements'] != undefined) {
+                if (this.element[3]['extensionElements']['values'] != undefined) {
+                    let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:PathFile'));
+                    if (test) {
+                        this.path = test['path']
                     }
                 }
             }
@@ -405,7 +410,7 @@ export default {
                 }
             }
         },
-        getComments() {
+        getAllComments() {
             this.Comments = [];
             if (this.element[3]['extensionElements'] != undefined) {
                 if (this.element[3]['extensionElements']['values'] != undefined) {
@@ -423,7 +428,6 @@ export default {
         },
         addComments() {
             this.$emit("SetComments",this.commentInput,2);
-            //addComment(this.element, '', this.commentInput);
             this.InitMethods();
         },
         deleteComment(index) {
@@ -548,12 +552,13 @@ export default {
             }
         },
         AddCode() {
-          //   if (this.checkCode(this.code_python)) {
-                this.$emit("AddCodePython", this.code_python);
-           // }
+            this.$emit("AddCodePython", this.code_python);
         },
         AddTimer(){
             this.$emit("AddTimer", this.Timer);
+        },
+        AddPath(){
+            this.$emit("AddPath", this.path);
         }
     },
     data() {
@@ -569,6 +574,7 @@ export default {
             index: -1,
             id: "",
             name_form: '',
+            path:"",
             showEdit: false,
             value_form: '',
             TypeFx: "",

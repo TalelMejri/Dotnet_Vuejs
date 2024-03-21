@@ -78,6 +78,14 @@ export default function Linter(eventBus, overlays,popupMenu,contextPad,canvas) {
               addError("Start event must have a timer definition", element.id);
               createIcon(element);
             }
+          }else if(element.businessObject.eventDefinitions[0]?.$type == "bpmn:FileInput"){
+            if (element.businessObject.extensionElements) {
+              removeError(element.id);
+              return;
+            } else {
+              addError("Start event must have a file path", element.id);
+              createIcon(element);
+            }
           }
         } else {
           return

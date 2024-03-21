@@ -17,8 +17,6 @@
     "bpmn-js-properties-panel": "^0.39.0",
     "bpmn-js-task-priorities": "^0.2.0",
     "bpmn-js-token-simulation": "^0.33.0",
-    "camunda-bpmn-moddle": "^4.5.0",
-    "camunda-transaction-boundaries": "^1.1.2",
     "core-js": "^3.8.3",
     "diagram-js": "^14.0.0",
     "diagram-js-grid": "^1.0.0",
@@ -27,7 +25,6 @@
     "min-dash": "^4.2.1",
     "min-dom": "^4.1.0",
     "vue": "^3.2.13",
-    "vue-bpmn": "^0.3.0",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0",
     "zeebe-bpmn-moddle": "^1.1.0"

@@ -27,6 +27,7 @@ namespace Backend.Models
     {
         public string Time { get; set; }
         public string Code { get; set; }
+        public string Path { get; set; }
         [JsonProperty("type")]
         public string TypeDef { get; set; }
         public string Retries { get; set; }

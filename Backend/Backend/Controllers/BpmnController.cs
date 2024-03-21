@@ -30,34 +30,23 @@ namespace Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadBpmn([FromForm] IFormFile file, [FromForm] string data)
         {
-
-            string directoryToWatch = @"C:\SDL";
-
-              FileSystemWatcher watcher = new FileSystemWatcher();
-              watcher.Path = directoryToWatch;
-              watcher.NotifyFilter = NotifyFilters.FileName;
-
-              // watcher.Filter = "*.bpmn"
-              watcher.Filter = "*.*";
-
-              watcher.Created += OnFileCreated;
-
-              watcher.EnableRaisingEvents = true;
-
-              return Ok();
-
-         
-
           
-            /*  var list = new List<String>();
+            var list = new List<String>();
 
               var elements = JsonConvert.DeserializeObject<List<ElementType>>(data);
               var replay = 0;
+              var path = "";
               foreach (ElementType element in elements)
               {
                   if (element.ExtensionElements != null)
                   {
-                      if (element.ExtensionElements.Any(ev => ev.Time != null))
+                    var extensionPath = element.ExtensionElements.FirstOrDefault(ev => ev.Path != null);
+                    if (extensionPath != null && extensionPath is ExtensionElement extensionElement)
+                    {
+                        path = extensionElement.Path; 
+                    }
+                 
+                    if (element.ExtensionElements.Any(ev => ev.Time != null))
                       {
                           var extensionValue = element.ExtensionElements.FirstOrDefault(ev => ev.Time != null);
                           if (int.TryParse(extensionValue.Time, out int replayMinutes))
@@ -71,7 +60,8 @@ namespace Backend.Controllers
                       }
                   }
               }
-
+          
+           
                   var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "fileBpmn");
                   if (!Directory.Exists(directoryPath))
                       Directory.CreateDirectory(directoryPath);
@@ -83,92 +73,43 @@ namespace Backend.Controllers
                   {
                       await file.CopyToAsync(stream);
                   }
-
-                  await _fileService.SaveFileName(randomFileName);
-                  var workflow = await BmnWorkflow(data);*/
-
-            /*
-               var currentTime = DateTime.UtcNow;
-               var nextMidnight = currentTime.Date.AddDays(1); 
-               var delay = nextMidnight - currentTime;
-            */
-            /*
-               var currentTime = DateTime.UtcNow;
-               var nextTargetTime = currentTime.Date.AddHours(23).AddMinutes(53);
-               if (currentTime > nextTargetTime)
-               {
-                  nextTargetTime = nextTargetTime.AddDays(1);
-               }
-               var delay = nextTargetTime - currentTime;
-               _timer = new System.Timers.Timer(delay.TotalMilliseconds);
-             */
-
-
-            /*
-                _timer = new System.Timers.Timer(TimeSpan.FromMinutes(replay).TotalMilliseconds);
-                _timer.Elapsed += async (sender, e) =>
-                {
-                     workflow=await BmnWorkflow(data);
-                };
-                _timer.AutoReset = true; // to make it executed many time
-                _timer.Start();
-                //_timer.Stop();
-                return Ok(workflow);
- 
-               */
-
-            /*var elements = JsonConvert.DeserializeObject<List<ElementType>>(data);
-           
-             var replay = 0;
-          foreach (ElementType element in elements)
-             {
-                 if (element.ExtensionElements != null)
-                 {
-                   if(element.ExtensionElements.Any(ev => ev.Time != null))
-                   {
-                     var extensionValue = element.ExtensionElements.FirstOrDefault(ev => ev.Time != null);
-                         if (int.TryParse(extensionValue.Time, out int timeValue))
-                         {
-                             replay = timeValue;
-                         }
-                         else
-                         {
-                             replay = 0;
-                         }
-                   }
-                 }
-             }*/
-
-        }
-
-        private static void OnFileCreated(object sender, FileSystemEventArgs e)
-        {
-            Runtime.PythonDLL = @"C:\Users\talel\AppData\Local\Programs\Python\Python312\Python312.dll";
-
-            PythonEngine.Initialize();
-            PythonEngine.BeginAllowThreads();
-
-            var code = @"
-import os
-
-def create_file_on_desktop(file_name):
-    desktop_path = os.path.join(os.path.expanduser('~'), 'Desktop')  # Path to desktop
-    file_path = os.path.join(desktop_path, file_name)  # Full path of the file on desktop
-    
-    # Creating the file
-    with open(file_path, 'w') as file:
-        file.write(""This is a new file created on the desktop!"")
-
-# Example usage:
-create_file_on_desktop(""new_file.txt"")
-";
-
-            using (Py.GIL())
+            
+            await _fileService.SaveFileName(randomFileName);
+            var listWorflows = new List<String>();
+            if (path=="" && replay == 0)
             {
-                PythonEngine.RunSimpleString(code);
+                  listWorflows = await BmnWorkflow(data);
+                return Ok(listWorflows);
+            }else if (path!="" && replay==0)
+            {
+                 string directoryToWatch = path;
+                 FileSystemWatcher watcher = new FileSystemWatcher();
+                 watcher.Path = directoryToWatch;
+                 watcher.NotifyFilter = NotifyFilters.FileName;
+                 // watcher.Filter = "*.bpmn"
+                 watcher.Filter = "*.*";
+                 watcher.Created += async (sender, e) =>
+                 {
+                     listWorflows = await BmnWorkflow(data);
+                 };
+                watcher.EnableRaisingEvents = true;
+                return Ok(listWorflows);
             }
-            PythonEngine.Shutdown();
+            else
+            {
+                  listWorflows = await BmnWorkflow(data);
+                 _timer = new System.Timers.Timer(TimeSpan.FromMinutes(replay).TotalMilliseconds);
+                 _timer.Elapsed += async (sender, e) =>
+                 {
+                      listWorflows = await BmnWorkflow(data);
+                 };
+                 _timer.AutoReset = true; // to make it executed many time
+                 _timer.Start();
+                 //_timer.Stop();
+                 return Ok(listWorflows);
+            }
         }
+    
             private async Task<List<String>> BmnWorkflow(string data)
         { 
             var elements = JsonConvert.DeserializeObject<List<ElementType>>(data);
@@ -186,13 +127,13 @@ create_file_on_desktop(""new_file.txt"")
                           if (scriptValue != null)
                           {
                               var code = scriptValue.Code;
-                              await Task.Delay(TimeSpan.FromSeconds(2));
+                              //await Task.Delay(TimeSpan.FromSeconds(2));
                               await _workflowRunner.RunAsync(new ScriptTaskWorkflow(code));
-                             // list.Add(element.Id);
+                              list.Add(element.Id);
                            }
                         break;
                     case "bpmn:SendTask":
-                        //list.Add(element.Id);
+                        list.Add(element.Id);
                         break;
                     default:
                         break;
@@ -204,45 +145,3 @@ create_file_on_desktop(""new_file.txt"")
 
     }
 }
-/*   if (replay == 0)
-            {
-               await BmnWorkflow(data);
-            }
-            else
-            {
-                StartWorkflowTimer(replay, data);
-            }
-         */
-/*   public void StartWorkflowTimer(int replay,string data)
-       {
-           timer = new System.Threading.Timer(ExecuteWorkflow, data, TimeSpan.Zero, TimeSpan.FromMinutes(replay));
-       }
-
-       private void ExecuteWorkflow(object state)
-       {
-           string jsonData = (string)state;
-           BmnWorkflow(jsonData);
-       }*/
-
-//  await ExecuteWorkflow(workflow);
-// return file
-// var fileContent = await LoadBpmnWorkflow(filePath);
-// return File(fileContent, "application/octet-stream", randomFileName);
-//return file 
-/* 
- * private async Task<byte[]> LoadBpmnWorkflow(string filePath)
- {
-     using (var stream = new FileStream(filePath, FileMode.Open))
-     {
-         using (var memoryStream = new MemoryStream())
-         {
-             await stream.CopyToAsync(memoryStream);
-             return memoryStream.ToArray();
-         }
-     }
- }
-*/
-/*  var workflow = new Employe(JsonConvert.SerializeObject(elements));
-    var executionContext = await _workflowRunner.RunAsync(workflow); *
-/*await _fileService.SaveFileName(randomFileName);
-var workflow = await BmnWorkflow(data);*/

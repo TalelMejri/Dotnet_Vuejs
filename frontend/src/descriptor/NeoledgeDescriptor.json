@@ -499,6 +499,24 @@
       ]
     },
     {
+      "name": "PathFile",
+      "superClass": [
+        "Element"
+      ],
+      "meta": {
+        "allowedIn": [
+          "bpmn:StartEvent"
+        ]
+      },
+      "properties": [
+        {
+          "name": "path",
+          "type": "String",
+          "isAttr": true
+        }
+      ]
+    },
+    {
       "name": "TimerCycle",
       "superClass": [
         "Element"

@@ -10,9 +10,10 @@
       <div class="flow-container">
         <div ref="content" class="containers">
           <div id="canvas" ref="canvas" class="canvas"></div>
-          <custome_panel v-if="element" @UpdateValue="UpdateValue" @AddTimer="AddTimer"
+          <custome_panel v-if="element" @UpdateValue="UpdateValue" @AddTimer="AddTimer" @AddPath="AddPath"
             @updatePropertyHeader="updatePropertyHeader" @SetHeaders="SetHeaders" @DeleteOutput="DeleteOutput"
-            @AddCodePython="AddCodePython" @AddOutputs="AddOutputs" @deleteComment="deleteComment" @SetComments="SetComments" @UpdatePropertyInput="UpdatePropertyInput"
+            @AddCodePython="AddCodePython" @AddOutputs="AddOutputs" @deleteComment="deleteComment"
+            @SetComments="SetComments" @UpdatePropertyInput="UpdatePropertyInput"
             @UpdatePropertyOutput="UpdatePropertyOutput" @DeleteInput="DeleteInput" @AddInputs="AddInputs"
             :element="element" @setValue="setValue" @updateActivityName="updateActivityName" @addFn="addFn"
             @updateProperties="updateProperties" @deleteHeader="deleteHeader" class="properties">
@@ -90,7 +91,6 @@ import { ref, onMounted, toRaw } from 'vue';
 import Modeler from "../Modeler/CustomBpmnModeler.js";
 import NeoledgeDescriptor from "../descriptor/NeoledgeDescriptor.json"
 import gridModule from 'diagram-js-grid';
-import CommentModule from "../comment_custom/index"
 import TokenSimulationModule from '../bpmn-js-token-simulation/lib/modeler.js';
 import ColorsBpm from "../colors/index";
 import transactionBoundariesModule from 'camunda-transaction-boundaries';
@@ -130,7 +130,7 @@ export default {
           ColorsBpm,
           gridModule,
           TokenSimulationModule,
-          CommentModule,
+          ,
           transactionBoundariesModule,
           Linter
         ],
@@ -180,33 +180,37 @@ export default {
 
     const ToggleSimulation = () => {
       if (errors.length > 0) {
-        
-      console.log(errors);
-      alert("There are errors in the process. Please fix them before starting the simulation.")
-      return;
-    } else {
-      
-      modeler.saveXML({ format: true }, function (err, updatedXml) {
-        if (err) {
-          console.error(err);
-          return;
-        }
-        const blob = new Blob([updatedXml], { type: 'application/bpmn20-xml;charset=utf-8' });
-        var definitions = modeler.get("canvas").getRootElement().businessObject.$parent;
-        WorkfloService.UploadFile(blob, parseBPMNJson(definitions)).then((res) => {
-          for(let i=0;i<(res.data).length;i++){
-            const elementNew = bpmnElementRegistry.get(res.data[i]);
-            modeler.get('modeling').updateProperties(elementNew, { status: 1});
+
+        console.log(errors);
+        alert("There are errors in the process. Please fix them before starting the simulation.")
+        return;
+      } else {
+
+        modeler.saveXML({ format: true }, function (err, updatedXml) {
+          if (err) {
+            console.error(err);
+            return;
           }
-          const eventBus = modeler.get('eventBus');
-          const active = _active.value;
-          _active.value = !active;
-          const canvas = modeler.get('canvas');
-          const selection = modeler.get('selection');
-          const contextPad = modeler.get('contextPad');
-          toggleMode(active, eventBus, canvas, selection, contextPad);
-        })
-      });
+          const blob = new Blob([updatedXml], { type: 'application/bpmn20-xml;charset=utf-8' });
+          var definitions = modeler.get("canvas").getRootElement().businessObject.$parent;
+          WorkfloService.UploadFile(blob, parseBPMNJson(definitions)).then((res) => {
+            if (res.data.length == 0) {
+              return;
+            } else {
+              for (let i = 0; i < (res.data).length; i++) {
+                const elementNew = bpmnElementRegistry.get(res.data[i]);
+                modeler.get('modeling').updateProperties(elementNew, { status: 1 });
+              }
+              const eventBus = modeler.get('eventBus');
+              const active = _active.value;
+              _active.value = !active;
+              const canvas = modeler.get('canvas');
+              const selection = modeler.get('selection');
+              const contextPad = modeler.get('contextPad');
+              toggleMode(active, eventBus, canvas, selection, contextPad);
+            }
+          })
+        });
       }
     }
 
@@ -262,11 +266,11 @@ export default {
         "key",
         key,
         value);
-      
+
     }
 
-    const SetComments = (comment,idUser) => {
-       AddElementComposer(
+    const SetComments = (comment, idUser) => {
+      AddElementComposer(
         element,
         bpmnElementfactory,
         "neo:CommentTask",
@@ -324,6 +328,24 @@ export default {
       if (!code_python) {
         code_python = createElement('neo:PythonCode', { code: code }, bpmnElementfactory);
         extensionElements.get('values').push(code_python);
+      }
+      RefreshDiagram();
+    }
+
+    const AddPath = (path) => {
+      const businessObject = toRaw(element.value[3]);
+      let extensionElements = businessObject.get('extensionElements');
+
+      if (!extensionElements) {
+        extensionElements = createElement('bpmn:ExtensionElements', {}, bpmnElementfactory);
+        businessObject.set('extensionElements', extensionElements);
+      }
+
+      let path_content = extensionElements.get('values').find(e => e.$type === 'neo:PathFile');
+
+      if (!path_content) {
+        path_content = createElement('neo:PathFile', { path: path }, bpmnElementfactory);
+        extensionElements.get('values').push(path_content);
       }
       RefreshDiagram();
     }
@@ -501,7 +523,7 @@ export default {
             ColorsBpm,
             gridModule,
             TokenSimulationModule,
-            CommentModule,
+            ,
             transactionBoundariesModule,
             Linter
           ],
@@ -556,6 +578,7 @@ export default {
       AddCodePython,
       DeleteInput,
       AddTimer,
+      AddPath,
       UpdatePropertyInput,
       deleteHeader,
       updateActivityName,
