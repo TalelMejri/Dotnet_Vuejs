@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Elsa.Activities.Http" Version="2.14.1" />
+    <PackageReference Include="Elsa.Core" Version="2.14.1" />
+    <PackageReference Include="Elsa.Designer.Components.Web" Version="2.14.1" />
+    <PackageReference Include="Elsa.Server.Api" Version="2.14.1" />
+  </ItemGroup>
+
+</Project>

@@ -7,7 +7,6 @@ using JetBrains.Annotations;
 
 namespace Backend.Worflows
 {
-    [PublicAPI]
     public class ScriptTaskWorkflow : WorkflowBase
     {
         private readonly string _data;

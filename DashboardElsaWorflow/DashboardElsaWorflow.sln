@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34003.232
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DashboardElsaWorflow", "DashboardElsaWorflow\DashboardElsaWorflow.csproj", "{136A0BC4-378F-48DA-A8B0-983D889083EC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{136A0BC4-378F-48DA-A8B0-983D889083EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{136A0BC4-378F-48DA-A8B0-983D889083EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{136A0BC4-378F-48DA-A8B0-983D889083EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{136A0BC4-378F-48DA-A8B0-983D889083EC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0967745C-1D67-417F-BDC3-D0339C9189FD}
+	EndGlobalSection
+EndGlobal

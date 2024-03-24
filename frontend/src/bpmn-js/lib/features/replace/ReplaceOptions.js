@@ -41,15 +41,15 @@ export var START_EVENT = [
       eventDefinitionType: 'bpmn:TimerEventDefinition'
     }
   },
-  {
-    label: 'File Input',
-    actionName: 'replace-with-signal-start',
-    className: 'bpmn-icon-start-event-condition',
-    target: {
-      type: 'bpmn:StartEvent',
-      eventDefinitionType: 'bpmn:FileInput'
-    }
-  }
+  // {
+  //   label: 'File Input',
+  //   actionName: 'replace-with-signal-start',
+  //   className: 'bpmn-icon-start-event-condition',
+  //   target: {
+  //     type: 'bpmn:StartEvent',
+  //     eventDefinitionType: 'bpmn:FileInput'
+  //   }
+  // }
 ];
 
 export var INTERMEDIATE_EVENT = [
@@ -760,15 +760,15 @@ export var EVENT_SUB_PROCESS_START_EVENT = [
       isInterrupting: false
     }
   },
-  {
-    label: 'File Input',
-    actionName: 'replace-with-signal-start',
-    className: 'bpmn-icon-start-event-message',
-    target: {
-      type: 'bpmn:StartEvent',
-      eventDefinitionType: 'bpmn:FileInput'
-    }
-  }
+  // {
+  //   label: 'File Input',
+  //   actionName: 'replace-with-signal-start',
+  //   className: 'bpmn-icon-start-event-message',
+  //   target: {
+  //     type: 'bpmn:StartEvent',
+  //     eventDefinitionType: 'bpmn:FileInput'
+  //   }
+  // }
 ];
 
 export var SEQUENCE_FLOW = [
