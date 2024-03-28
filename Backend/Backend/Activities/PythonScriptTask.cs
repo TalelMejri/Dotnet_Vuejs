@@ -9,7 +9,7 @@ namespace Backend.Activities
 {
     public class PythonScriptTask : Activity
     {
-        DbContextClasse _context = new DbContextClasse();
+  
 
         public PythonScriptTask(Variable<string> code)
         {

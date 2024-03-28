@@ -9,13 +9,13 @@ namespace Backend.Worflows
 {
     public class ScriptTaskWorkflow : WorkflowBase
     {
-        private readonly string _data;
+      private readonly string _data;
 
         public ScriptTaskWorkflow(string data)
         {
             _data = data;
         }
-      
+     
         protected override void Build(IWorkflowBuilder builder)
         {
             var code = builder.WithVariable<string>(_data);

@@ -12,7 +12,7 @@
         <div class="body mt-2" v-if="element != ''">
             <div v-if="selected == 'comment'" class="comment-section">
                 <div v-if="Comments != ''">
-                    <div v-for="(CommentValue,index) in Comments">
+                    <div v-for="(CommentValue, index) in Comments">
                         <div class="comment-header">
                             <span class="comment-user">{{ CommentValue.IdUser }}</span>
                             <!-- <span class="comment-date">12/05/02</span> -->
@@ -39,12 +39,13 @@
             </div>
             <div v-else>
                 <div class="NameContent">
-                    <p  v-if="element[2].split(':')[0] !='bpmn'"> 
-                       <span class="text" v-if="element[3]['eventDefinitions']!=undefined"> Name : {{ element[3]['eventDefinitions'][0]["$type"].split(':')[1] }}</span>
-                       <span class="text" v-else>  Name : {{ element[3]["$type"].split(':')[1] }}</span>
+                    <p v-if="element[2].split(':')[0] != 'bpmn'">
+                        <span class="text" v-if="element[3]['eventDefinitions'] != undefined"> Name : {{
+                element[3]['eventDefinitions'][0]["$type"].split(':')[1] }}</span>
+                        <span class="text" v-else> Name : {{ element[3]["$type"].split(':')[1] }}</span>
                     </p>
-                    <p v-else >
-                        <span  class="text">Name : </span>  {{ element[2].split(':')[1]  }}
+                    <p v-else>
+                        <span class="text">Name : </span> {{ element[2].split(':')[1] }}
                     </p>
                 </div>
                 <div class="mt-2">
@@ -69,48 +70,54 @@
                         <div class="accordion-item" v-if="element[2].split(':')[1] === 'SendTask'">
                             <h2 class="accordion-header" id="headingTask">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#taskDefinition" aria-expanded="false" aria-controls="taskDefinition">
+                                    data-bs-target="#taskDefinition" aria-expanded="false"
+                                    aria-controls="taskDefinition">
                                     Task Definition
                                 </button>
                             </h2>
                             <div id="taskDefinition" class="accordion-collapse collapse " aria-labelledby="headingTask"
                                 data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    <input class="form-control mb-2" v-model="TypeFx" type="text" placeholder="Type Fx" />
+                                    <input class="form-control mb-2" v-model="TypeFx" type="text"
+                                        placeholder="Type Fx" />
                                     <input class="form-control" v-model="Retries" type="text" placeholder="Retries" />
                                     <button @click="AddFn()">Add FN</button>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="accordion-item" v-if="element[3]['eventDefinitions']!=undefined && element[3]['eventDefinitions'][0]['$type'].split(':')[1]=='TimerEventDefinition'">
+                        <div class="accordion-item"
+                            v-if="element[3]['eventDefinitions'] != undefined && element[3]['eventDefinitions'][0]['$type'].split(':')[1] == 'TimerEventDefinition'">
                             <h2 class="accordion-header" id="headingTimer">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#taskTimer" aria-expanded="false" aria-controls="taskTimer">
-                                        Timer
+                                    Timer
                                 </button>
                             </h2>
                             <div id="taskTimer" class="accordion-collapse collapse " aria-labelledby="headingTimer"
                                 data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    <input :class="Timer!='' ? 'form-control mb-2' :'form-control mb-2 is-invalid'" v-model="Timer" type="text" placeholder="Add Time With Minute" />
+                                    <input :class="Timer != '' ? 'form-control mb-2' : 'form-control mb-2 is-invalid'"
+                                        v-model="Timer" type="text" placeholder="Add Time With Minute" />
                                     <button @click="AddTimer()">Add Timer</button>
                                 </div>
                             </div>
                         </div>
 
 
-                        <div class="accordion-item" v-if="element[3]['eventDefinitions']!=undefined && element[3]['eventDefinitions'][0]['$type'].split(':')[1]=='FileInput'">
+                        <div class="accordion-item"
+                            v-if="element[3]['eventDefinitions'] != undefined && element[3]['eventDefinitions'][0]['$type'].split(':')[1] == 'FileInput'">
                             <h2 class="accordion-header" id="headingPath">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#taskPath" aria-expanded="false" aria-controls="taskPath">
-                                        PathFile
+                                    PathFile
                                 </button>
                             </h2>
                             <div id="taskPath" class="accordion-collapse collapse " aria-labelledby="headingPath"
                                 data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    <input :class="path!='' ? 'form-control mb-2' :'form-control mb-2 is-invalid'" v-model="path" type="text" placeholder="path" />
+                                    <input :class="path != '' ? 'form-control mb-2' : 'form-control mb-2 is-invalid'"
+                                        v-model="path" type="text" placeholder="path" />
                                     <button @click="AddPath()">Add Path</button>
                                 </div>
                             </div>
@@ -132,7 +139,8 @@
                                             <p>Key : {{ header.key }}</p>
                                             <p>Value : {{ header.value }}</p>
                                             <div class="d-flex gap-2 justify-content-center mb-2">
-                                                <button class="btn btn-danger" @click="deleteHeader(index)">Delete</button>
+                                                <button class="btn btn-danger"
+                                                    @click="deleteHeader(index)">Delete</button>
                                                 <button class="btn btn-warning"
                                                     @click="showEditHeader(index, header.key, header.value)">
                                                     Edit</button>
@@ -166,10 +174,10 @@
                                         <div class="card  mb-2">
                                             <div class="card-body">
                                                 <textarea
-                                                    :class="error_code == '' && code_python !='' ? 'form-control' : 'form-control is-invalid'"
-                                                    name="text" placeholder="Enter Your Code Here" v-model="code_python"
-                                                  ></textarea>
-                                                  <!-- @input="checkCode()" -->
+                                                    :class="error_code == '' && code_python != '' ? 'form-control' : 'form-control is-invalid'"
+                                                    name="text" placeholder="Enter Your Code Here"
+                                                    v-model="code_python"></textarea>
+                                                <!-- @input="checkCode()" -->
                                                 <!-- <small v-if="error_code != ''" class="text-danger">{{ error_code }}</small> -->
                                             </div>
                                             <div class="d-flex gap-2 justify-content-center mb-2">
@@ -177,6 +185,79 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="accordion-item" v-if="element[2].split(':')[1] === 'BusinessRuleTask'">
+                            <h2 class="accordion-header" id="typesgbd">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#typesgbd" aria-expanded="false" aria-controls="typesgbd">
+                                    Type SGBD
+                                </button>
+                            </h2>
+                            <div id="typesgbd" class="accordion-collapse collapse" aria-labelledby="typesgbd"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="content_prop">
+                                        <div class="card  mb-2">
+                                            <div class="card-body">
+                                                 <select v-model="type_sgbd" class="form-control">
+                                                        <option value="MYSQL">MYSQL</option>
+                                                        <option value="ORACLE">ORACLE</option>
+                                                        <option value="SQL SERVER">SQL SERVER</option>
+                                                 </select>
+                                            </div>
+                                            <div class="d-flex gap-2 justify-content-center mb-2">
+                                                <button class="btn btn-primary"
+                                                    @click="AddTypeSGBD()">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item" v-if="element[2].split(':')[1] === 'BusinessRuleTask'">
+                            <h2 class="accordion-header" id="headingPython">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#headerPython" aria-expanded="false" aria-controls="headerPython">
+                                    Connection String BD
+                                </button>
+                            </h2>
+                            <div id="headerPython" class="accordion-collapse collapse" aria-labelledby="headingPython"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="content_prop">
+                                        <div class="card  mb-2">
+                                            <div class="card-body">
+                                                <input type="text" class="form-control" placeholder="ConnectionString"
+                                                    v-model="ConnectionString">
+                                            </div>
+                                            <div class="d-flex gap-2 justify-content-center mb-2">
+                                                <button class="btn btn-primary"
+                                                    @click="AddConnectionString()">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item" v-if="element[2].split(':')[1] === 'BusinessRuleTask'">
+                            <h2 class="accordion-header" id="headingPath">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#taskPath" aria-expanded="false" aria-controls="taskPath">
+                                    Requete SQl
+                                </button>
+                            </h2>
+                            <div id="taskPath" class="accordion-collapse collapse " aria-labelledby="headingPath"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <input class="form-control" v-model="requet_sql" type="text"
+                                        placeholder="select * from table" />
+                                    <button @click="AddRequete()">Add </button>
                                 </div>
                             </div>
                         </div>
@@ -196,7 +277,8 @@
                                             <p>Local Name : {{ input.name }}</p>
                                             <p>Variable Fx : {{ input.value }}</p>
                                             <div class="d-flex gap-2 justify-content-center mb-2">
-                                                <button class="btn btn-danger" @click="DeleteInput(index)">Delete</button>
+                                                <button class="btn btn-danger"
+                                                    @click="DeleteInput(index)">Delete</button>
                                                 <button class="btn btn-warning"
                                                     @click="ShowEditInput(index, input.name, input.value)">
                                                     Edit</button>
@@ -232,7 +314,8 @@
                                             <p>Local Name : {{ Output.name }}</p>
                                             <p>Variable Fx : {{ Output.value }}</p>
                                             <div class="d-flex gap-2 justify-content-center mb-2">
-                                                <button class="btn btn-danger" @click="DeleteOutput(index)">Delete</button>
+                                                <button class="btn btn-danger"
+                                                    @click="DeleteOutput(index)">Delete</button>
                                                 <button class="btn btn-warning"
                                                     @click="ShowEditOutput(index, Output.name, Output.value)">
                                                     Edit</button>
@@ -259,7 +342,7 @@
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                     Extension properties <span class="badge"> {{ AllProperties.length > 0 ?
-                                        AllProperties.length : '' }}</span>
+                AllProperties.length : '' }}</span>
                                 </button>
                             </h2>
                             <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
@@ -280,7 +363,8 @@
                                     </div>
                                     <div class="formAdd ">
                                         <p>Add New Propertie :</p>
-                                        <input type="text" class="form-control mb-2" placeholder="name" v-model="name_form">
+                                        <input type="text" class="form-control mb-2" placeholder="name"
+                                            v-model="name_form">
                                         <input type="text" class="form-control  mb-2" placeholder="value"
                                             v-model="value_form">
                                         <button v-if="showEdit" class="btn btn-warning"
@@ -290,6 +374,8 @@
                                 </div>
                             </div>
                         </div>
+
+
                     </div>
                 </div>
             </div>
@@ -319,6 +405,9 @@ export default {
                 this.getAllInputs();
                 this.getAllOutputs();
                 this.getPath();
+                this.getConnectionString();
+                this.getRequete();
+                this.getTypeSgbd();
             }
         },
         getAllHeaders() {
@@ -351,7 +440,7 @@ export default {
                 }
             }
         },
-        getCodePython(){
+        getCodePython() {
             if (this.element[3]['extensionElements'] != undefined) {
                 if (this.element[3]['extensionElements']['values'] != undefined) {
                     let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:PythonCode'));
@@ -361,7 +450,7 @@ export default {
                 }
             }
         },
-        getPath(){
+        getPath() {
             if (this.element[3]['extensionElements'] != undefined) {
                 if (this.element[3]['extensionElements']['values'] != undefined) {
                     let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:PathFile'));
@@ -371,7 +460,7 @@ export default {
                 }
             }
         },
-        getTimer(){
+        getTimer() {
             if (this.element[3]['extensionElements'] != undefined) {
                 if (this.element[3]['extensionElements']['values'] != undefined) {
                     let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:TimerCycle'));
@@ -390,6 +479,40 @@ export default {
                     if (test) {
                         this.TypeFx = test['type']
                         this.Retries = test['retries']
+                    }
+                }
+            }
+        },
+        getConnectionString() {
+            this.TypeFx = "";
+            this.Retries = ""
+            if (this.element[3]['extensionElements'] != undefined) {
+                if (this.element[3]['extensionElements']['values'] != undefined) {
+                    let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:ConnectionString'));
+                    if (test) {
+                        this.ConnectionString = test['ConnectionString']
+                    }
+                }
+            }
+        },
+        getRequete() {
+            this.TypeFx = "";
+            this.Retries = ""
+            if (this.element[3]['extensionElements'] != undefined) {
+                if (this.element[3]['extensionElements']['values'] != undefined) {
+                    let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:RequeteSQL'));
+                    if (test) {
+                        this.requet_sql = test['requete']
+                    }
+                }
+            }
+        },
+        getTypeSgbd() {
+            if (this.element[3]['extensionElements'] != undefined) {
+                if (this.element[3]['extensionElements']['values'] != undefined) {
+                    let test = toRaw(this.element[3]['extensionElements']['values'].find((e) => e.$type == 'neo:TypeSgbd'));
+                    if (test) {
+                        this.type_sgbd = test['TypeSgbd']
                     }
                 }
             }
@@ -427,7 +550,7 @@ export default {
             }
         },
         addComments() {
-            this.$emit("SetComments",this.commentInput,2);
+            this.$emit("SetComments", this.commentInput, 2);
             this.InitMethods();
         },
         deleteComment(index) {
@@ -554,11 +677,20 @@ export default {
         AddCode() {
             this.$emit("AddCodePython", this.code_python);
         },
-        AddTimer(){
+        AddTimer() {
             this.$emit("AddTimer", this.Timer);
         },
-        AddPath(){
+        AddPath() {
             this.$emit("AddPath", this.path);
+        },
+        AddConnectionString() {
+            this.$emit("AddConnectionString", this.ConnectionString);
+        },
+        AddRequete() {
+            this.$emit("AddRequete", this.requet_sql);
+        },
+        AddTypeSGBD() {
+            this.$emit("AddTypeSGBD", this.type_sgbd);
         }
     },
     data() {
@@ -566,7 +698,10 @@ export default {
             error_code: "",
             selected: "prop",
             AllComments: [],
+            requet_sql: "",
+            ConnectionString: "",
             AllHeaders: [],
+            type_sgbd:"",
             commentInput: "",
             AllProperties: [],
             AllInputs: [],
@@ -574,11 +709,11 @@ export default {
             index: -1,
             id: "",
             name_form: '',
-            path:"",
+            path: "",
             showEdit: false,
             value_form: '',
             TypeFx: "",
-            Timer:"",
+            Timer: "",
             Retries: "",
             showHeadersEdit: false,
             key: "",
@@ -587,7 +722,7 @@ export default {
             showInputEdit: false,
             variable_fx: "",
             AllOutputs: [],
-            Comments:[],
+            Comments: [],
             localNameOutPut: "",
             variable_fxOutput: "",
             showOutPutEdit: "",

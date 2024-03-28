@@ -13,10 +13,10 @@
           <custome_panel v-if="element" @UpdateValue="UpdateValue" @AddTimer="AddTimer" @AddPath="AddPath"
             @updatePropertyHeader="updatePropertyHeader" @SetHeaders="SetHeaders" @DeleteOutput="DeleteOutput"
             @AddCodePython="AddCodePython" @AddOutputs="AddOutputs" @deleteComment="deleteComment"
-            @SetComments="SetComments" @UpdatePropertyInput="UpdatePropertyInput"
+            @SetComments="SetComments" @UpdatePropertyInput="UpdatePropertyInput" @AddTypeSGBD="AddTypeSGBD"
             @UpdatePropertyOutput="UpdatePropertyOutput" @DeleteInput="DeleteInput" @AddInputs="AddInputs"
-            :element="element" @setValue="setValue" @updateActivityName="updateActivityName" @addFn="addFn"
-            @updateProperties="updateProperties" @deleteHeader="deleteHeader" class="properties">
+            :element="element" @setValue="setValue" @updateActivityName="updateActivityName" @AddRequete="AddRequete" @addFn="addFn"
+            @updateProperties="updateProperties" @deleteHeader="deleteHeader" @AddConnectionString=AddConnectionString class="properties">
           </custome_panel>
         </div>
       </div>
@@ -350,6 +350,60 @@ export default {
       RefreshDiagram();
     }
 
+    const AddConnectionString = (ConnectionString) => {
+      const businessObject = toRaw(element.value[3]);
+      let extensionElements = businessObject.get('extensionElements');
+
+      if (!extensionElements) {
+        extensionElements = createElement('bpmn:ExtensionElements', {}, bpmnElementfactory);
+        businessObject.set('extensionElements', extensionElements);
+      }
+
+      let path_content = extensionElements.get('values').find(e => e.$type === 'neo:ConnectionString');
+
+      if (!path_content) {
+        path_content = createElement('neo:ConnectionString', { ConnectionString: ConnectionString }, bpmnElementfactory);
+        extensionElements.get('values').push(path_content);
+      }
+      RefreshDiagram();
+    }
+
+    const AddTypeSGBD = (type) => {
+      const businessObject = toRaw(element.value[3]);
+      let extensionElements = businessObject.get('extensionElements');
+
+      if (!extensionElements) {
+        extensionElements = createElement('bpmn:ExtensionElements', {}, bpmnElementfactory);
+        businessObject.set('extensionElements', extensionElements);
+      }
+
+      let path_content = extensionElements.get('values').find(e => e.$type === 'neo:TypeSgbd');
+
+      if (!path_content) {
+        path_content = createElement('neo:TypeSgbd', { TypeSgbd: type }, bpmnElementfactory);
+        extensionElements.get('values').push(path_content);
+      }
+      RefreshDiagram();
+    }
+
+    const AddRequete = (req) => {
+      const businessObject = toRaw(element.value[3]);
+      let extensionElements = businessObject.get('extensionElements');
+
+      if (!extensionElements) {
+        extensionElements = createElement('bpmn:ExtensionElements', {}, bpmnElementfactory);
+        businessObject.set('extensionElements', extensionElements);
+      }
+
+      let path_content = extensionElements.get('values').find(e => e.$type === 'neo:RequeteSQL');
+
+      if (!path_content) {
+        path_content = createElement('neo:RequeteSQL', { requete: req }, bpmnElementfactory);
+        extensionElements.get('values').push(path_content);
+      }
+      RefreshDiagram();
+    }
+
     const AddTimer = (timer) => {
       const businessObject = toRaw(element.value[3]);
       let extensionElements = businessObject.get('extensionElements');
@@ -578,6 +632,9 @@ export default {
       AddCodePython,
       DeleteInput,
       AddTimer,
+      AddRequete,
+      AddTypeSGBD,
+      AddConnectionString,
       AddPath,
       UpdatePropertyInput,
       deleteHeader,

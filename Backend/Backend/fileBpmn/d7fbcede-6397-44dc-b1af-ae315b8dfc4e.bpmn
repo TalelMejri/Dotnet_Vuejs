@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:neo="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="sid-38422fae-e03e-43a3-bef4-bd33b32041b2" targetNamespace="http://bpmn.io/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="16.4.0">
+  <process id="Process_0" isExecutable="false">
+    <startEvent id="StartEvent_16eyhew" status="0">
+      <extensionElements>
+        <neo:pathFile path="C:\SDL" />
+      </extensionElements>
+      <outgoing>SequenceFlow_100j617</outgoing>
+      <fileInput />
+    </startEvent>
+    <scriptTask id="Task_1v2evgn" status="0">
+      <extensionElements>
+        <neo:pythonCode code="&#10;import os&#10;&#10;def create_file_on_desktop(file_name):&#10;    desktop_path = os.path.join(os.path.expanduser(&#39;~&#39;), &#39;Desktop&#39;)  # Path to desktop&#10;    file_path = os.path.join(desktop_path, file_name)  # Full path of the file on desktop&#10;    &#10;    # Creating the file&#10;    with open(file_path, &#39;w&#39;) as file:&#10;        file.write(&#34;This is a new file created on the desktop!&#34;)&#10;&#10;# Example usage:&#10;create_file_on_desktop(&#34;new_file.txt&#34;)&#10;" />
+      </extensionElements>
+      <incoming>SequenceFlow_100j617</incoming>
+    </scriptTask>
+    <sequenceFlow id="SequenceFlow_100j617" sourceRef="StartEvent_16eyhew" targetRef="Task_1v2evgn" />
+  </process>
+  <bpmndi:BPMNDiagram id="BpmnDiagram_1">
+    <bpmndi:BPMNPlane id="BpmnPlane_1" bpmnElement="Process_0">
+      <bpmndi:BPMNShape id="StartEvent_1alh6sv_di" bpmnElement="StartEvent_16eyhew">
+        <omgdc:Bounds x="152" y="426" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_0fsjfir_di" bpmnElement="Task_1v2evgn">
+        <omgdc:Bounds x="318" y="404" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_100j617_di" bpmnElement="SequenceFlow_100j617">
+        <di:waypoint x="188" y="444" />
+        <di:waypoint x="318" y="444" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -499,6 +499,60 @@
       ]
     },
     {
+      "name": "ConnectionString",
+      "superClass": [
+        "Element"
+      ],
+      "meta": {
+        "allowedIn": [
+          "bpmn:BusinessRuleTask"
+        ]
+      },
+      "properties": [
+        {
+          "name": "ConnectionString",
+          "type": "String",
+          "isAttr": true
+        }
+      ]
+    },
+    {
+      "name": "RequeteSQL",
+      "superClass": [
+        "Element"
+      ],
+      "meta": {
+        "allowedIn": [
+          "bpmn:BusinessRuleTask"
+        ]
+      },
+      "properties": [
+        {
+          "name": "requete",
+          "type": "String",
+          "isAttr": true
+        }
+      ]
+    },
+    {
+      "name": "TypeSgbd",
+      "superClass": [
+        "Element"
+      ],
+      "meta": {
+        "allowedIn": [
+          "bpmn:BusinessRuleTask"
+        ]
+      },
+      "properties": [
+        {
+          "name": "TypeSgbd",
+          "type": "String",
+          "isAttr": true
+        }
+      ]
+    },
+    {
       "name": "PathFile",
       "superClass": [
         "Element"

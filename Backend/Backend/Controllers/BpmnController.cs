@@ -60,9 +60,9 @@ namespace Backend.Controllers
                       }
                   }
               }
-          
+       
            
-                  var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "fileBpmn");
+               var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "fileBpmn");
                   if (!Directory.Exists(directoryPath))
                       Directory.CreateDirectory(directoryPath);
 
@@ -78,7 +78,7 @@ namespace Backend.Controllers
             var listWorflows = new List<String>();
             if (path=="" && replay == 0)
             {
-                  listWorflows = await BmnWorkflow(data);
+                listWorflows = await BmnWorkflow(data);
                 return Ok(listWorflows);
             }else if (path!="" && replay==0)
             {
@@ -131,6 +131,20 @@ namespace Backend.Controllers
                               await _workflowRunner.RunAsync(new ScriptTaskWorkflow(code));
                               list.Add(element.Id);
                            }
+                        break;
+                    case "bpmn:BusinessRuleTask":
+                        var connection = element.ExtensionElements.FirstOrDefault(ev => ev.ConnectionString != null);
+                        var requete = element.ExtensionElements.FirstOrDefault(ev => ev.Requete != null);
+                        var type = element.ExtensionElements.FirstOrDefault(ev => ev.TypeSgbd != null);
+
+                        if (connection != null && requete!=null && type!=null)
+                        {
+                            var connectionTest = connection.ConnectionString;
+                            var requeteTest = requete.Requete;
+                            var typesgbd = type.TypeSgbd;
+                            await _workflowRunner.RunAsync(new BDConnectionWorkflow(connectionTest,requeteTest, typesgbd));
+                            list.Add(element.Id);
+                        }
                         break;
                     case "bpmn:SendTask":
                         list.Add(element.Id);
