@@ -180,7 +180,6 @@ export default {
 
     const ToggleSimulation = () => {
       if (errors.length > 0) {
-
         console.log(errors);
         alert("There are errors in the process. Please fix them before starting the simulation.")
         return;
