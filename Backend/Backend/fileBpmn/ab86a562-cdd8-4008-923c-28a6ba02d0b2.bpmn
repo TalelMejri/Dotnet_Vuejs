@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="sid-38422fae-e03e-43a3-bef4-bd33b32041b2" targetNamespace="http://bpmn.io/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="16.4.0">
+  <process id="Process_0" isExecutable="false">
+    <startEvent id="StartEvent_0i0g5xt" status="0">
+      <outgoing>SequenceFlow_09e4ol9</outgoing>
+    </startEvent>
+    <sequenceFlow id="SequenceFlow_09e4ol9" sourceRef="StartEvent_0i0g5xt" targetRef="Task_0asp5k5" />
+    <sendTask id="Task_0asp5k5" status="0">
+      <incoming>SequenceFlow_09e4ol9</incoming>
+    </sendTask>
+  </process>
+  <bpmndi:BPMNDiagram id="BpmnDiagram_1">
+    <bpmndi:BPMNPlane id="BpmnPlane_1" bpmnElement="Process_0">
+      <bpmndi:BPMNShape id="StartEvent_0i0g5xt_di" bpmnElement="StartEvent_0i0g5xt">
+        <omgdc:Bounds x="219" y="113" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_09e4ol9_di" bpmnElement="SequenceFlow_09e4ol9">
+        <di:waypoint x="255" y="131" />
+        <di:waypoint x="434" y="131" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="SendTask_0t88u07_di" bpmnElement="Task_0asp5k5">
+        <omgdc:Bounds x="434" y="91" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

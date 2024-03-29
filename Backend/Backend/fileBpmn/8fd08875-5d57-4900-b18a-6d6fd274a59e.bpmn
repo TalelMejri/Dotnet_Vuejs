@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="sid-38422fae-e03e-43a3-bef4-bd33b32041b2" targetNamespace="http://bpmn.io/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="16.4.0">
+  <process id="Process_0" isExecutable="false">
+    <startEvent id="StartEvent_1y45yut" name="Start" status="0">
+      <outgoing>SequenceFlow_1fgwqcj</outgoing>
+    </startEvent>
+    <task id="Task_0d40oqb" status="0">
+      <incoming>SequenceFlow_1fgwqcj</incoming>
+    </task>
+    <sequenceFlow id="SequenceFlow_1fgwqcj" sourceRef="StartEvent_1y45yut" targetRef="Task_0d40oqb" />
+  </process>
+  <bpmndi:BPMNDiagram id="BpmnDiagram_1">
+    <bpmndi:BPMNPlane id="BpmnPlane_1" bpmnElement="Process_0">
+      <bpmndi:BPMNShape id="StartEvent_1y45yut_di" bpmnElement="StartEvent_1y45yut">
+        <omgdc:Bounds x="152" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="159" y="145" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_0d40oqb_di" bpmnElement="Task_0d40oqb">
+        <omgdc:Bounds x="405" y="90" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1fgwqcj_di" bpmnElement="SequenceFlow_1fgwqcj">
+        <di:waypoint x="188" y="120" />
+        <di:waypoint x="297" y="120" />
+        <di:waypoint x="297" y="130" />
+        <di:waypoint x="405" y="130" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
